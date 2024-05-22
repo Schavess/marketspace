@@ -4,7 +4,7 @@ import { extendTheme } from 'native-base';
 export const THEME = extendTheme({
   colors: {
     blue: '#364D9D',
-    blue_light: '#647a7c',
+    blue_light: '#647ac7',
     red_light: '#EE7979',
     gray: {
       100: '#1a181b',
@@ -28,6 +28,7 @@ export const THEME = extendTheme({
     md: 16,
     lg: 20,
     xl: 24,
+    xxl: 32,
   },
   sizes: {
     14: 56,
