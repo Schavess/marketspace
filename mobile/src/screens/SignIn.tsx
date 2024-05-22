@@ -1,12 +1,20 @@
+import { useNavigation } from "@react-navigation/native";
+
 import { VStack, Heading, Text, Center } from 'native-base';
-
 import LogoSVG from '../assets/logo_marketspace.svg';
-
-
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 
+import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
+
 export function SignIn() {
+  const navigation = useNavigation<AuthNavigatorRoutesProps>();
+
+  function handleNewAccount() {
+    navigation.navigate('signUp');
+  }
+
+
   return (
     <>
       <VStack bg={"gray.600"} borderRadius={20} pb={20} alignItems="center" >
@@ -41,6 +49,7 @@ export function SignIn() {
             title="Criar uma conta"
             color='gray.500'
             mt={5}
+            onPress={handleNewAccount}
           />
         </Center>
       </VStack>

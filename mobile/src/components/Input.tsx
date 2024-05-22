@@ -49,7 +49,7 @@ export function Input({ errorMessage = null, isInvalid, secureTextEntry, ...rest
           borderColor: "red.500"
         }}
         _focus={{
-          bgColor: 'gray.600',
+          bgColor: 'gray.700',
           borderWidth: 1,
           borderColor: 'blue'
         }}
