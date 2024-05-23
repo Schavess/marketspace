@@ -6,7 +6,7 @@ import { Plus, TagSimple, ArrowRight, MagnifyingGlass, Sliders } from 'phosphor-
 import avatar from '../assets/Avatar.png'
 import { Button } from '@components/Button';
 
-import { THEME } from '../theme'
+import { THEME } from '../theme';
 
 export function Home() {
 
