@@ -1,19 +1,18 @@
-import { Button as ButtonNativeBase, IButtonProps, Text, Icon } from 'native-base';
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
+import { Button as ButtonNativeBase, IButtonProps, Text, HStack } from 'native-base';
 
 type Props = IButtonProps & {
-  title: string;
+  title?: string;
   variant?: 'solid' | 'outline';
-  leftIcon?: ReactElement;
+  icon?: ReactNode;
   color?: string;
   textColor?: string;
 }
 
-export function Button({ title, variant = 'solid', textColor = 'black', color = 'blue_light', leftIcon, ...rest }: Props) {
+export function Button({ title = '', variant = 'solid', textColor = 'black', color = 'blue_light', icon, ...rest }: Props) {
   return (
     <ButtonNativeBase
       h={14}
-      w={'full'}
       bg={color}
       borderWidth={variant === 'outline' ? 1 : 0}
       borderColor="green.500"
@@ -22,15 +21,18 @@ export function Button({ title, variant = 'solid', textColor = 'black', color = 
         bg: variant === 'outline' ? 'gray.500' : color
       }}
       {...rest}
-      leftIcon={leftIcon} // Passe o ícone aqui
     >
-      <Text
-        color={variant === 'outline' ? 'white' : textColor}
-        fontFamily="heading"
-        fontSize="sm"
-      >
-        {title}
-      </Text>
+      <HStack>
+        {icon && <>{icon}</>}
+        <Text
+          color={variant === 'outline' ? 'white' : textColor}
+          fontFamily="heading"
+          fontSize="sm"
+          pl={2}
+        >
+          {title}
+        </Text>
+      </HStack>
     </ButtonNativeBase>
   );
 }

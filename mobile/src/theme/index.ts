@@ -5,6 +5,7 @@ export const THEME = extendTheme({
   colors: {
     blue: '#364D9D',
     blue_light: '#647ac7',
+    blue_flash: 'rgba(100, 122, 199, 0.2)',
     red_light: '#EE7979',
     gray: {
       100: '#1a181b',
