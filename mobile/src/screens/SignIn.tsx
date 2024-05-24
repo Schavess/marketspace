@@ -39,6 +39,7 @@ export function SignIn() {
           <Button
             title="Entrar"
             textColor='white'
+            w={'full'}
           />
         </Center>
       </VStack >
@@ -50,6 +51,7 @@ export function SignIn() {
             color='gray.500'
             mt={5}
             onPress={handleNewAccount}
+            w={'full'}
           />
         </Center>
       </VStack>

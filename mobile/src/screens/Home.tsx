@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { TouchableOpacity, FlatList } from 'react-native';
-import { VStack, Text, HStack, Center, Image, Input, Button as NBButton } from 'native-base';
+import { VStack, Text, HStack, Image, Input, Button as NBButton } from 'native-base';
 
 import { Plus, TagSimple, ArrowRight, MagnifyingGlass, Sliders } from 'phosphor-react-native';
 
 import avatar from '../assets/Avatar.png';
 import { Button } from '@components/Button';
 import { Item } from '@components/Item';
+import { FilterModalPure } from '@components/FilterModalPure';
+import { FilterModal } from '@components/FilterModal';
 
 import { THEME } from '../theme';
 
@@ -47,6 +49,11 @@ const DATA = [
 ];
 
 export function Home() {
+
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const openModal = useCallback(() => setIsModalVisible(true), []);
+  const closeModal = useCallback(() => setIsModalVisible(false), []);
 
   const renderHeader = () => (
     <VStack w={'100%'} >
@@ -122,34 +129,38 @@ export function Home() {
             bg: THEME.colors.gray[500],
 
           }}
+          onPress={openModal}
         >
           <Sliders color={'black'} size={25} />
         </NBButton>
       </HStack>
-    </VStack>
+    </VStack >
   );
 
   return (
+    <>
 
-    <FlatList
-      data={DATA}
-      renderItem={({ item }) => (
-        <Item
-          imageUrl={item.imageUrl}
-          userAvatar={item.userAvatar}
-          status={item.status}
-          itemName={item.itemName}
-          price={item.price}
-        />
-      )}
-      keyExtractor={item => item.id}
-      numColumns={2}
-      columnWrapperStyle={{
-      }}
-      contentContainerStyle={{
-        alignItems: 'center',
-      }}
-      ListHeaderComponent={renderHeader}
-    />
+      <FlatList
+        data={DATA}
+        renderItem={({ item }) => (
+          <Item
+            imageUrl={item.imageUrl}
+            userAvatar={item.userAvatar}
+            status={item.status}
+            itemName={item.itemName}
+            price={item.price}
+          />
+        )}
+        keyExtractor={item => item.id}
+        numColumns={2}
+        columnWrapperStyle={{
+        }}
+        contentContainerStyle={{
+          alignItems: 'center',
+        }}
+        ListHeaderComponent={renderHeader}
+      />
+      <FilterModalPure visible={isModalVisible} onClose={closeModal} />
+    </>
   );
 }

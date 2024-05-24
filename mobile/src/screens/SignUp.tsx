@@ -62,6 +62,7 @@ export function SignUp() {
           <Button
             title="Entrar"
             textColor='white'
+            w={'full'}
           />
         </Center>
       </VStack >
@@ -73,6 +74,7 @@ export function SignUp() {
             color='gray.500'
             mt={5}
             onPress={handleBackToLogin}
+            w={'full'}
           />
         </Center>
       </VStack>
