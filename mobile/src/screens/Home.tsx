@@ -8,7 +8,7 @@ import avatar from '../assets/Avatar.png';
 import { Button } from '@components/Button';
 import { Item } from '@components/Item';
 import { FilterModalPure } from '@components/FilterModalPure';
-import { FilterModal } from '@components/FilterModal';
+// import { FilterModal } from '@components/FilterModal';
 
 import { THEME } from '../theme';
 
