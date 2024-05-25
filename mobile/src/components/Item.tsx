@@ -9,6 +9,8 @@ type ItemProps = {
   price: string;
 };
 
+import { THEME } from '../theme';
+
 export function Item({ imageUrl, userAvatar, status, itemName, price }: ItemProps) {
 
   return (
@@ -24,11 +26,17 @@ export function Item({ imageUrl, userAvatar, status, itemName, price }: ItemProp
       >
         <Image source={{ uri: imageUrl } as ImageSourcePropType} alt={itemName} style={{ width: '100%', height: 150 }} />
         <HStack position="absolute" top="2" left="2">
-          <Avatar source={{ uri: userAvatar } as ImageSourcePropType} size="sm" />
+          <Avatar
+            source={{ uri: userAvatar } as ImageSourcePropType}
+            size="sm"
+            borderWidth={2}
+            borderColor="white"
+          />
         </HStack>
         <Badge
-          colorScheme="amber"
+          backgroundColor={status === 'USADO' ? THEME.colors.gray[300] : THEME.colors.blue_light}
           position="absolute"
+          borderRadius={10}
           top="2"
           right="2"
           _text={{
@@ -36,15 +44,22 @@ export function Item({ imageUrl, userAvatar, status, itemName, price }: ItemProp
             fontWeight: 'bold',
           }}
         >
-          {status}
+          <Text fontFamily={'heading'} color={'white'}>
+            {status}
+          </Text>
         </Badge>
         <VStack space={1} p="1">
-          <Text fontSize="lg" fontFamily={'heading'} color="gray.100">
+          <Text fontSize="lg" fontFamily={'body'} color="gray.100">
             {itemName}
           </Text>
-          <Text fontSize="md" color="gray.100">
-            R$ {price}
-          </Text>
+          <HStack alignItems={'baseline'} >
+            <Text fontSize="md" fontFamily={'heading'} color="black">
+              R$
+            </Text>
+            <Text pl={1.5} fontSize="lg" fontFamily={'heading'} color="black">
+              {price}
+            </Text>
+          </HStack>
         </VStack>
       </Box>
     </>

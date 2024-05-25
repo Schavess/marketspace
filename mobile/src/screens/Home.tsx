@@ -17,7 +17,7 @@ const DATA = [
     id: '1',
     imageUrl: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg',
     userAvatar: 'https://avatars.githubusercontent.com/u/39462847?v=4',
-    status: 'USADO',
+    status: ' NOVO',
     itemName: 'Tênis vermelho 1',
     price: '59,90',
   },
