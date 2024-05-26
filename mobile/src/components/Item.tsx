@@ -2,16 +2,17 @@ import { Image, ImageSourcePropType } from 'react-native';
 import { Box, Text, VStack, HStack, Badge, Avatar } from 'native-base';
 
 type ItemProps = {
-  itemName: string;
+  name: string;
   imageUrl: string;
   userAvatar: string;
-  status: string;
+  is_new: boolean;
+  is_active?: boolean;
   price: string;
 };
 
 import { THEME } from '../theme';
 
-export function Item({ imageUrl, userAvatar, status, itemName, price }: ItemProps) {
+export function Item({ imageUrl, userAvatar, is_new, is_active, name, price }: ItemProps) {
 
   return (
     <>
@@ -21,10 +22,21 @@ export function Item({ imageUrl, userAvatar, status, itemName, price }: ItemProp
         height={'250px'}
         borderColor="coolGray.200"
         shadow="3"
-        bg="white"
+        bg='white'
         m="1"
       >
-        <Image source={{ uri: imageUrl } as ImageSourcePropType} alt={itemName} style={{ width: '100%', height: 150 }} />
+        <Image source={{ uri: imageUrl } as ImageSourcePropType} alt={name} style={{ width: '100%', height: 150 }} />
+        {!is_active && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={'40%'}
+            bg="black"
+            opacity={0.5}
+          />
+        )}
         <HStack position="absolute" top="2" left="2">
           <Avatar
             source={{ uri: userAvatar } as ImageSourcePropType}
@@ -33,8 +45,23 @@ export function Item({ imageUrl, userAvatar, status, itemName, price }: ItemProp
             borderColor="white"
           />
         </HStack>
+        {!is_active && (
+          <Badge
+            backgroundColor={'transparent'}
+            position="absolute"
+            top="20%"
+            left='20%'
+            _text={{
+              fontWeight: 'bold',
+            }}
+          >
+            <Text fontSize={'sm'} fontFamily={'heading'} color={'white'}>
+              ANÚNCIO DESATIVADO
+            </Text>
+          </Badge>
+        )}
         <Badge
-          backgroundColor={status === 'USADO' ? THEME.colors.gray[300] : THEME.colors.blue_light}
+          backgroundColor={is_new ? THEME.colors.blue_light : THEME.colors.gray[300]}
           position="absolute"
           borderRadius={10}
           top="2"
@@ -45,12 +72,12 @@ export function Item({ imageUrl, userAvatar, status, itemName, price }: ItemProp
           }}
         >
           <Text fontFamily={'heading'} color={'white'}>
-            {status}
+            {is_new ? 'NOVO' : 'USADO'}
           </Text>
         </Badge>
         <VStack space={1} p="1">
           <Text fontSize="lg" fontFamily={'body'} color="gray.100">
-            {itemName}
+            {name}
           </Text>
           <HStack alignItems={'baseline'} >
             <Text fontSize="md" fontFamily={'heading'} color="black">

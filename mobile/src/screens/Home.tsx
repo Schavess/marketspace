@@ -17,33 +17,37 @@ const DATA = [
     id: '1',
     imageUrl: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg',
     userAvatar: 'https://avatars.githubusercontent.com/u/39462847?v=4',
-    status: ' NOVO',
-    itemName: 'Tênis vermelho 1',
+    is_new: true,
+    name: 'Tênis vermelho 1',
     price: '59,90',
+    is_active: true,
   },
   {
     id: '2',
     imageUrl: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg',
     userAvatar: 'https://avatars.githubusercontent.com/u/39462847?v=4',
-    status: 'USADO',
-    itemName: 'Tênis vermelho 2',
+    is_new: false,
+    name: 'Tênis vermelho 2',
     price: '59,90',
+    is_active: true,
   },
   {
     id: '3',
     imageUrl: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg',
     userAvatar: 'https://avatars.githubusercontent.com/u/39462847?v=4',
-    status: 'USADO',
-    itemName: 'Tênis vermelho 3',
+    is_new: false,
+    name: 'Tênis vermelho 3',
     price: '59,90',
+    is_active: true,
   },
   {
     id: '4',
     imageUrl: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg',
     userAvatar: 'https://avatars.githubusercontent.com/u/39462847?v=4',
-    status: 'USADO',
-    itemName: 'Tênis vermelho 4',
+    is_new: false,
+    name: 'Tênis vermelho 4',
     price: '59,90',
+    is_active: false,
   },
   // Adicione mais itens conforme necessário
 ];
@@ -146,9 +150,10 @@ export function Home() {
           <Item
             imageUrl={item.imageUrl}
             userAvatar={item.userAvatar}
-            status={item.status}
-            itemName={item.itemName}
+            is_new={item.is_new}
+            name={item.name}
             price={item.price}
+            is_active
           />
         )}
         keyExtractor={item => item.id}
