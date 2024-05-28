@@ -28,10 +28,10 @@ export const MyCarousel: React.FC<MyCarouselProps> = ({ data }) => {
   );
 
   return (
-    <View style={{ height: (screenHeight - 60) / 2 }}>
+    <View style={{ height: (screenHeight) / 3 }}>
       <Carousel
         width={screenWidth}
-        height={screenHeight / 2}
+        height={screenHeight / 3}
         data={data}
         renderItem={renderItem}
         onSnapToItem={(index) => setActiveSlide(index)}
@@ -63,7 +63,7 @@ export const MyCarousel: React.FC<MyCarouselProps> = ({ data }) => {
 const styles = StyleSheet.create({
   item: {
     width: screenWidth,
-    height: screenWidth - 30,
+    height: screenHeight / 3,
     backgroundColor: 'red',
     borderRadius: 10,
     overflow: 'hidden',
