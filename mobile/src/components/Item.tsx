@@ -19,7 +19,7 @@ export function Item({ imageUrl, userAvatar, is_new, is_active, name, price }: I
 
   const navigation = useNavigation<any>();
 
-  const isMineAd = false;
+  const isMineAd = true;
   function handleClickItem() {
 
     if (isMineAd) {
