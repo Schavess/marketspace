@@ -1,5 +1,9 @@
-import { Image, ImageSourcePropType } from 'react-native';
+
+import { Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
 import { Box, Text, VStack, HStack, Badge, Avatar } from 'native-base';
+
+import { THEME } from '../theme';
+import { useNavigation } from '@react-navigation/native';
 
 type ItemProps = {
   name: string;
@@ -10,12 +14,25 @@ type ItemProps = {
   price: string;
 };
 
-import { THEME } from '../theme';
 
 export function Item({ imageUrl, userAvatar, is_new, is_active, name, price }: ItemProps) {
 
+  const navigation = useNavigation<any>();
+
+  const isMineAd = false;
+  function handleClickItem() {
+
+    if (isMineAd) {
+
+      navigation.navigate('myaddetail');
+    } else {
+
+      navigation.navigate('addetail');
+    }
+  }
+
   return (
-    <>
+    <TouchableOpacity onPress={handleClickItem}>
       <Box
         borderRadius="lg"
         overflow="hidden"
@@ -89,6 +106,6 @@ export function Item({ imageUrl, userAvatar, is_new, is_active, name, price }: I
           </HStack>
         </VStack>
       </Box>
-    </>
+    </TouchableOpacity>
   )
 }

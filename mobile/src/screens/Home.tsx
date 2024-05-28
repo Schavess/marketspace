@@ -12,6 +12,8 @@ import { FilterModalPure } from '@components/FilterModalPure';
 
 import { THEME } from '../theme';
 
+import { useNavigation } from '@react-navigation/native'
+
 const DATA = [
   {
     id: '1',
@@ -54,10 +56,15 @@ const DATA = [
 
 export function Home() {
 
+  const navigation = useNavigation<any>();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const openModal = useCallback(() => setIsModalVisible(true), []);
   const closeModal = useCallback(() => setIsModalVisible(false), []);
+
+  function handleNavigateToMyAdds() {
+    navigation.navigate('myAds')
+  }
 
   const renderHeader = () => (
     <VStack w={'100%'} >
@@ -87,7 +94,7 @@ export function Home() {
         </VStack>
       </HStack>
       <Text w={'85%'} textAlign={'left'} pt={10} pb={5} fontSize={'md'}>Seus produtos anunciados para venda</Text>
-      <TouchableOpacity style={{ width: "85%", height: 65, justifyContent: 'center', backgroundColor: THEME.colors.blue_flash }}>
+      <TouchableOpacity onPress={handleNavigateToMyAdds} style={{ width: "85%", height: 65, justifyContent: 'center', backgroundColor: THEME.colors.blue_flash }}>
         <HStack w={'full'}>
           <TagSimple color={THEME.colors.blue_light} size={30} style={{ transform: [{ rotate: '225deg' }], alignSelf: 'center' }} />
           <VStack px={4}>
@@ -140,6 +147,8 @@ export function Home() {
       </HStack>
     </VStack >
   );
+
+
 
   return (
     <>
