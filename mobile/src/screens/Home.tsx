@@ -65,6 +65,9 @@ export function Home() {
   function handleNavigateToMyAdds() {
     navigation.navigate('myAds')
   }
+  function handleNavigateToAdCreation() {
+    navigation.navigate('adcreation')
+  }
 
   const renderHeader = () => (
     <VStack w={'100%'} >
@@ -90,6 +93,7 @@ export function Home() {
             _pressed={{
               bg: THEME.colors.gray[500]
             }}
+            onPress={handleNavigateToAdCreation}
           />
         </VStack>
       </HStack>

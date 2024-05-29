@@ -29,7 +29,7 @@ const initialPaymentMethods: PaymentMethods = {
 };
 
 
-export function AdEdition() {
+export function AdCreation() {
 
   const navigation = useNavigation<any>();
 
@@ -62,7 +62,7 @@ export function AdEdition() {
                 <ArrowLeft size={30} />
               </TouchableOpacity>
               <Center flex={1}>
-                <Text fontFamily={'heading'} fontSize={'lg'}>Editar anúncio</Text>
+                <Text fontFamily={'heading'} fontSize={'lg'}>Criar anúncio</Text>
               </Center>
             </HStack>
             <Text pt={2} color={'gray.300'} fontFamily={'heading'} fontSize={'md'}>Imagens</Text>
