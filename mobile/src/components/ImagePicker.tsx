@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     maxWidth: '100%',
-    // backgroundColor: '#fdf'
+    width: '100%',
   },
   title: {
     fontSize: 16,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 5,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -19,7 +19,7 @@ const CustomCheckbox = ({ label, value, onValueChange }: CustomCheckboxProps) =>
         {value ?
           <>
             <View style={styles.checkboxTick}>
-              <Check size={15} color='white' weight='bold' />
+              <Check size={12} color='white' weight='bold' />
             </View>
           </>
           : <></>
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     fontSize: 16,
+    fontFamily: THEME.fonts['body']
   },
 });
 

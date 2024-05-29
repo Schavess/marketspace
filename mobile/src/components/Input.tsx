@@ -4,9 +4,10 @@ import { Ionicons } from '@expo/vector-icons';  // Certifique-se de ter @expo/ve
 
 type Props = IInputProps & {
   errorMessage?: string | null;
+  height?: string;
 }
 
-export function Input({ errorMessage = null, isInvalid, secureTextEntry, ...rest }: Props) {
+export function Input({ errorMessage = null, height = '64px', isInvalid, secureTextEntry, ...rest }: Props) {
   const [showPassword, setShowPassword] = useState(false);
   const invalid = !!errorMessage || isInvalid;
 
@@ -35,7 +36,7 @@ export function Input({ errorMessage = null, isInvalid, secureTextEntry, ...rest
       <NativeBaseInput
         bg="white"
         w={'full'}
-        h={14}
+        h={height}
         px={4}
         borderWidth={0}
         fontSize="md"
@@ -49,9 +50,9 @@ export function Input({ errorMessage = null, isInvalid, secureTextEntry, ...rest
           borderColor: "red.500"
         }}
         _focus={{
-          bgColor: 'gray.700',
+          bgColor: 'white',
           borderWidth: 1,
-          borderColor: 'blue'
+          borderColor: 'blue_light'
         }}
         InputRightElement={renderInputRightElement()}
         {...rest}
