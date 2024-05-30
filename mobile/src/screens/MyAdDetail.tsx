@@ -1,16 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { HStack, VStack, View, Text, Image, Badge, Button as NBButton, Box, Center } from 'native-base';
-import { ArrowLeft, Pencil, Money, WhatsappLogo, QrCode, Barcode, CreditCard, Bank, Power, Trash } from 'phosphor-react-native';
+import { ArrowLeft, Pencil, Money, QrCode, Barcode, CreditCard, Bank, Power, Trash } from 'phosphor-react-native';
 
 import { MyCarousel } from '@components/MyCarousel'
 
 import { useNavigation } from '@react-navigation/native';
 
 import avatar from '@assets/Avatar.png';
-
-const IS_ACTIVE = false;
-
+import { CustomAlert } from '@components/CustomAlert';
 
 const CARROUSEL_DATA = [
   { thumbnail: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', title: 'Photo 1' },
@@ -25,7 +23,29 @@ const CARROUSEL_DATA = [
 
 export function MyAdDetail() {
 
+  const [alertVisible, setAlertVisible] = useState(false);
   const navigation = useNavigation<any>();
+  const [isAdActive, setAdActive] = useState(true);
+
+  function handleAddIsActive() {
+    setAdActive(!isAdActive);
+  }
+
+  function handleDelete() {
+    setAlertVisible(true);
+  }
+
+  const handleConfirm = () => {
+    // Handle the confirm action
+    setAlertVisible(false);
+    navigation.navigate('home');
+  };
+
+  const handleCancel = () => {
+    // Handle the cancel action
+    setAlertVisible(false);
+  };
+
 
   function HandleGoBack() {
     navigation.goBack();
@@ -48,22 +68,23 @@ export function MyAdDetail() {
         </HStack>
       </View>
       <SafeAreaView style={{ width: '100%', alignItems: 'center' }}>
-        {/* {!IS_ACTIVE && (
-            <Box
-              position="absolute"
-              top={0}
-              left={0}
-              right={0}
-              bottom={2}
-              bg="black"
-              opacity={0.5}
-            >
-              <Center flex={1}>
-                <Text fontFamily={'heading'} fontSize={'lg'} color={'white'}>ANÚNCIO DESATIVADO</Text>
-              </Center>
-            </Box>
-          )} */}
         <MyCarousel data={CARROUSEL_DATA} />
+        {!isAdActive && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={2}
+            bg="black"
+            opacity={0.5}
+          >
+            <Center flex={1}>
+              <Text fontFamily={'heading'} fontSize={'lg'} color={'white'}>ANÚNCIO DESATIVADO</Text>
+            </Center>
+          </Box>
+        )}
+
       </SafeAreaView>
 
       <ScrollView contentContainerStyle={{
@@ -150,14 +171,15 @@ export function MyAdDetail() {
           </VStack>
           <VStack py={7} px={5} flex={1} w={'100%'} bg={'white'} alignItems={'center'}>
 
-            {IS_ACTIVE ?
+            {isAdActive ?
               <HStack flex={1} justifyContent={'center'}>
                 <NBButton
                   w={'100%'}
-                  bg={'black'}
+                  bg={'gray.200'}
                   _pressed={{
-                    bg: 'blue'
+                    bg: 'gray.100'
                   }}
+                  onPress={handleAddIsActive}
                 >
                   <HStack alignItems={'flex-end'}>
                     <Power color={'white'} size={25} />
@@ -173,6 +195,7 @@ export function MyAdDetail() {
                   _pressed={{
                     bg: 'blue'
                   }}
+                  onPress={handleAddIsActive}
                 >
                   <HStack alignItems={'flex-end'}>
                     <Power color={'white'} size={25} />
@@ -189,8 +212,9 @@ export function MyAdDetail() {
                 w={'100%'}
                 bg={'gray.500'}
                 _pressed={{
-                  bg: 'blue'
+                  bg: 'gray.400'
                 }}
+                onPress={handleDelete}
               >
                 <HStack alignItems={'flex-end'}>
                   <Trash color={'black'} size={25} />
@@ -202,6 +226,13 @@ export function MyAdDetail() {
           </VStack>
         </Center>
       </ScrollView>
+      <CustomAlert
+        visible={alertVisible}
+        title="Deseja realmente excluir este anúncio?"
+        message=""
+        onCancel={handleCancel}
+        onConfirm={handleConfirm}
+      />
     </VStack>
 
 

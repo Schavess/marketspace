@@ -5,6 +5,8 @@ import { CustomSelect } from '@components/CustomSelect';
 import { Plus } from 'phosphor-react-native';
 import { useState } from 'react';
 
+import { useNavigation } from '@react-navigation/native';
+
 const options = [
   { label: 'Todos', value: 'todos' },
   { label: 'Novos', value: 'new' },
@@ -56,6 +58,8 @@ const DATA = [
 
 export function MyAds() {
 
+  const navigation = useNavigation<any>();
+
   const [service, setService] = useState("todos");
 
   const getFilteredAds = () => {
@@ -78,6 +82,10 @@ export function MyAds() {
 
   const filteredAds = getFilteredAds();
 
+  function handleNavigateToCreateAd() {
+    navigation.navigate('adcreation');
+  }
+
   return (
     <>
       <VStack>
@@ -91,6 +99,7 @@ export function MyAds() {
                 paddingRight: '5%',
                 alignItems: 'flex-end',
               }}
+              onPress={handleNavigateToCreateAd}
             >
               <Plus size={25} />
             </TouchableOpacity>

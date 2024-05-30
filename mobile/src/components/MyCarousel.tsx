@@ -4,6 +4,8 @@ import Carousel from 'react-native-reanimated-carousel';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
+import { THEME } from '../theme';
+
 interface Item {
   thumbnail: string;
   title: string;
@@ -95,6 +97,6 @@ const styles = StyleSheet.create({
   dotStyle: {
     borderRadius: 5,
     marginHorizontal: 8,
-    backgroundColor: 'gray',
+    backgroundColor: THEME.colors.blue_light,
   },
 });
