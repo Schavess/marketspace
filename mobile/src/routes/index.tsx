@@ -3,22 +3,27 @@ import { AppRoutes } from "./app.routes";
 import { useTheme, Box } from 'native-base';
 
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { Loading } from '@components/Loading';
+
+import { useAuth } from '@hooks/useAuth';
 
 export function Routes() {
 
   const { colors } = useTheme();
+  const { user, isLoadingUserStorageData } = useAuth();
 
   const theme = DefaultTheme;
   theme.colors.background = colors.gray[700];
 
-  const isAuthenticated = true;
+  if (isLoadingUserStorageData) {
+    return <Loading />
+  }
+
 
   return (
     <Box flex={1} bg="white">
       <NavigationContainer theme={theme}>
-        {isAuthenticated ?
-          <AppRoutes /> : <AuthRoutes />
-        }
+        {user.id ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>
     </Box>
   );
