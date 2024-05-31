@@ -7,11 +7,12 @@ interface CustomAlertProps {
   visible: boolean;
   title: string;
   message: string;
+  textConfirm?: string;
   onCancel: () => void;
   onConfirm: () => void;
 }
 
-export function CustomAlert({ visible, title, message, onCancel, onConfirm }: CustomAlertProps) {
+export function CustomAlert({ visible, title, message, onCancel, onConfirm, textConfirm = 'Sim, excluir' }: CustomAlertProps) {
   return (
     <Modal
       visible={visible}
@@ -31,7 +32,7 @@ export function CustomAlert({ visible, title, message, onCancel, onConfirm }: Cu
             <Button color={'gray.100'} textColor={'white'} style={{
               flex: 1,
               margin: 5,
-            }} title='Sim, excluir' onPress={onConfirm} />
+            }} title={textConfirm} onPress={onConfirm} />
           </View>
         </View>
       </View>

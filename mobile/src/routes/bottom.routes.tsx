@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -11,7 +11,10 @@ import { Box } from 'native-base';
 
 import { Home } from '@screens/Home';
 import { MyAds } from '@screens/MyAds';
-import { Getout } from '@screens/GetOut';
+
+import { useAuth } from '@hooks/useAuth';
+import { useState } from 'react';
+import { CustomAlert } from '@components/CustomAlert';
 
 type AppRoutes = {
   home: undefined;
@@ -22,7 +25,24 @@ type AppRoutes = {
 const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 
 export function BottomRoutes() {
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const { signOut } = useAuth();
   const { colors } = THEME;
+
+  const handleSignOut = () => {
+    setAlertVisible(true);
+  };
+
+  const handleCancel = () => {
+    setAlertVisible(false);
+  };
+
+  const handleConfirm = () => {
+    setAlertVisible(false);
+    signOut();
+  };
+
   return (
     <Box bg="gray.700" h={'100%'}>
       <Navigator
@@ -61,14 +81,26 @@ export function BottomRoutes() {
         />
         <Screen
           name="getOut"
-          component={Getout}
           options={{
             tabBarIcon: () => (
               <GetOutIcon fill={colors.red_light} width={30} height={30} />
-            )
+            ),
+            tabBarButton: (props) => (
+              <TouchableOpacity {...props} onPress={handleSignOut} />
+            ),
           }}
-        />
+        >
+          {() => null}
+        </Screen>
       </Navigator>
+      <CustomAlert
+        visible={alertVisible}
+        title="Confirmar Saída"
+        message="Você tem certeza que deseja sair?"
+        onCancel={handleCancel}
+        onConfirm={handleConfirm}
+        textConfirm={'Sim, sair.'}
+      />
     </Box>
   );
 }
