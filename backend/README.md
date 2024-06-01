@@ -7,7 +7,6 @@
   <a href="LICENSE"><img  src="https://img.shields.io/static/v1?label=License&message=MIT&color=8257e5&labelColor=202024" alt="License"></a>
 </p>
 
-
 ## 💻 Projeto
 
 ignite-rn-2022-challenge-marketspace-api
@@ -16,12 +15,23 @@ ignite-rn-2022-challenge-marketspace-api
 
 Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
+## Iniciando Banco de Dados
+
+```javascript
+npx prisma migrate
+```
+
+## Iniciando Backend
+
+```javascript
+npm run dev
+```
+
 ---
 
 <p align="center">
   Feito com 💜 by Rocketseat
 </p>
-
 
 <!--START_SECTION:footer-->
 
@@ -35,4 +45,3 @@ Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 </p>
 
 <!--END_SECTION:footer-->
-

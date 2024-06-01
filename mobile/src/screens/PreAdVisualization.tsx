@@ -11,6 +11,8 @@ import avatar from '@assets/Avatar.png';
 
 import { THEME } from '../theme';
 
+import { useRoute } from '@react-navigation/native';
+
 
 const CARROUSEL_DATA = [
   { thumbnail: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', title: 'Photo 1' },
@@ -25,7 +27,22 @@ const CARROUSEL_DATA = [
 
 export function PreAdVisualization() {
 
+  const route = useRoute<any>();
+
+  const {
+    name,
+    description,
+    price,
+    isNew,
+    accept_trade,
+    paymentMethods,
+    selectedImages
+  } = route.params;
+
   const navigation = useNavigation<any>();
+
+  console.log(paymentMethods);
+  console.log(selectedImages);
 
   function HandleGoBack() {
     navigation.goBack();
@@ -65,17 +82,17 @@ export function PreAdVisualization() {
               borderRadius={5}
               alignSelf={'flex-start'}
             >
-              <Text fontSize={'sm'} fontFamily={'heading'}>NOVO</Text>
+              <Text fontSize={'sm'} fontFamily={'heading'}>{isNew ? 'NOVO' : 'USADO'}</Text>
             </Badge>
           </HStack>
           <HStack w={'85%'} pt={2} alignItems={'flex-end'}>
-            <Text flex={1} fontSize={'xl'} fontFamily={'heading'}>Tênis</Text>
+            <Text flex={1} fontSize={'xl'} fontFamily={'heading'}>{name}</Text>
             <Text color={'blue_light'} fontSize={'md'} fontFamily={'heading'}>R$</Text>
-            <Text pl={2} color={'blue_light'} fontSize={'lg'} fontFamily={'heading'}>120,00</Text>
+            <Text pl={2} color={'blue_light'} fontSize={'lg'} fontFamily={'heading'}>{price}</Text>
           </HStack>
           <HStack w={'85%'} pt={2} alignItems={'flex-end'}>
             <Text flex={1} fontSize={'sm'} fontFamily={'body'} textAlign={'justify'}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur iaculis nibh enim, eu vehicula dolor.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur iaculis nibh enim, eu vehicula dolor.
+              {description}
             </Text>
           </HStack>
           <HStack w={'85%'} pt={2} alignItems={'flex-end'}>
@@ -83,7 +100,7 @@ export function PreAdVisualization() {
               Aceita troca?
             </Text>
             <Text ml={2} fontSize={'sm'} fontFamily={'body'} >
-              Sim
+              {accept_trade ? 'Sim' : 'Não'}
             </Text>
           </HStack>
           <HStack w={'85%'} pt={2} alignItems={'flex-end'}>

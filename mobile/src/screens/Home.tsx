@@ -1,18 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import { TouchableOpacity, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native'
+import { api } from '@services/api';
+import { useAuth } from '@hooks/useAuth';
+
 import { VStack, Text, HStack, Image, Input, Button as NBButton } from 'native-base';
-
+import { THEME } from '../theme';
 import { Plus, TagSimple, ArrowRight, MagnifyingGlass, Sliders } from 'phosphor-react-native';
-
-import avatar from '../assets/Avatar.png';
+import defaulUserPhotoImg from '../assets/Avatar.png';
 import { Button } from '@components/Button';
 import { Item } from '@components/Item';
 import { FilterModalPure } from '@components/FilterModalPure';
-// import { FilterModal } from '@components/FilterModal';
-
-import { THEME } from '../theme';
-
-import { useNavigation } from '@react-navigation/native'
 
 const DATA = [
   {
@@ -56,6 +54,10 @@ const DATA = [
 
 export function Home() {
 
+  const { user } = useAuth();
+
+  console.log(user);
+
   const navigation = useNavigation<any>();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -73,14 +75,19 @@ export function Home() {
     <VStack w={'100%'} >
       <HStack pt={'80px'} justifyContent={'space-between'}>
         <Image
-          source={avatar}
+          source={
+            user.avatar
+              ? { uri: `${api.defaults.baseURL}/images/${user.avatar}` }
+              : defaulUserPhotoImg
+          }
           alt='Avatar image'
           width={50}
           height={50}
+          borderRadius={50}
         />
         <VStack ml={2}>
           <Text fontSize={'md'}>Boas vindas,</Text>
-          <Text fontSize={'lg'} fontFamily={'heading'}>Maria!</Text>
+          <Text fontSize={'lg'} fontFamily={'heading'}>{user.name}!</Text>
         </VStack>
         <VStack flex={1} alignItems={'flex-end'}>
           <Button

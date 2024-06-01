@@ -1,6 +1,7 @@
 import { Center, Text, VStack, HStack, Switch } from 'native-base';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useForm, Controller } from 'react-hook-form';
 
 import ImagePickerComponent from '@components/ImagePicker'
 import { Input } from '@components/Input'
@@ -28,14 +29,16 @@ const initialPaymentMethods: PaymentMethods = {
   depositoBancario: true,
 };
 
-
 export function AdCreation() {
+
+  const { control, handleSubmit, formState: { errors } } = useForm();
 
   const navigation = useNavigation<any>();
 
-  const [productCondition, setProductCondition] = useState('new');
-  const [isSwitched, setIsSwitched] = useState(true);
+  const [isNew, setIsNew] = useState('new');
+  const [accept_trade, setAccept_trade] = useState(true);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethods>(initialPaymentMethods);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   const handlePaymentMethodChange = useCallback((key: keyof PaymentMethods, value: boolean) => {
     setPaymentMethods(prev => ({
@@ -48,16 +51,16 @@ export function AdCreation() {
     navigation.goBack();
   }
 
-  function handlePreAdPage() {
-    navigation.navigate('preadvisualization');
+  function handlePreAdPage(data: any) {
+    navigation.navigate('preadvisualization', { ...data, paymentMethods, accept_trade, isNew, selectedImages });
   }
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-      <VStack mt={'50px'} >
-        <Center >
+      <VStack mt={'50px'}>
+        <Center>
           <VStack w={'85%'}>
-            <HStack >
+            <HStack>
               <TouchableOpacity onPress={HandleGoBack}>
                 <ArrowLeft size={30} />
               </TouchableOpacity>
@@ -66,12 +69,7 @@ export function AdCreation() {
               </Center>
             </HStack>
             <Text pt={2} color={'gray.300'} fontFamily={'heading'} fontSize={'md'}>Imagens</Text>
-            <Text
-              pt={2}
-              color={'gray.300'}
-              fontFamily={'body'}
-              fontSize={'sm'}
-            >
+            <Text pt={2} color={'gray.300'} fontFamily={'body'} fontSize={'sm'}>
               Escolha imagens para mostrar o quanto seu produto é incrível.
             </Text>
             <View style={{
@@ -80,64 +78,119 @@ export function AdCreation() {
               maxWidth: '100%',
               height: 150,
             }}>
-              <ImagePickerComponent />
+              <ImagePickerComponent onImagesSelected={setSelectedImages} />
             </View>
             <Text pt={2} color={'gray.300'} fontFamily={'heading'} fontSize={'md'}>Sobre o produto:</Text>
-            <Input
-              placeholder='Título do anúncio'
+
+            <Controller
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Título do anúncio"
+                  keyboardType="name-phone-pad"
+                  autoCapitalize="none"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="name"
+              defaultValue=""
             />
-            <Input
-              placeholder='Descrição do produto'
-              height={'200px'}
+            {errors.name && <Text color="red.500">Este campo é obrigatório.</Text>}
+
+            <Controller
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Descrição do produto"
+                  keyboardType="name-phone-pad"
+                  autoCapitalize="none"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  height={'200px'}
+                />
+              )}
+              name="description"
+              defaultValue=""
             />
+            {errors.description && <Text color="red.500">Este campo é obrigatório.</Text>}
 
             <HStack w={'full'}>
-              <RadioCheckbox onValueChange={setProductCondition} />
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <RadioCheckbox onValueChange={value => {
+                    onChange(value);
+                    setIsNew(value);
+                  }} />
+                )}
+                name="productCondition"
+                defaultValue={isNew}
+              />
             </HStack>
-            <Text pt={2} color={'gray.300'} fontFamily={'heading'} fontSize={'md'}>Venda</Text>
-            <Input
-              placeholder='Preço'
-              keyboardType='numeric'
-            />
-            <Text pt={2} color={'gray.300'} fontFamily={'heading'} fontSize={'md'}>Aceita troca?</Text>
 
-            <Switch
-              alignSelf={'flex-start'}
-              size={'lg'} onToggle={setIsSwitched}
-              isChecked={isSwitched}
-              onTrackColor="blue_light"
+            <Text pt={2} color={'gray.300'} fontFamily={'heading'} fontSize={'md'}>Venda</Text>
+            <Controller
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder='Preço'
+                  keyboardType='numeric'
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="price"
+              defaultValue=""
+            />
+            {errors.price && <Text color="red.500">Este campo é obrigatório.</Text>}
+
+            <Text pt={2} color={'gray.300'} fontFamily={'heading'} fontSize={'md'}>Aceita troca?</Text>
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Switch
+                  alignSelf={'flex-start'}
+                  size={'lg'}
+                  onToggle={value => {
+                    onChange(value);
+                    setAccept_trade(value);
+                  }}
+                  isChecked={value}
+                  onTrackColor="blue_light"
+                />
+              )}
+              name="accept_trade"
+              defaultValue={accept_trade}
             />
 
             <Text pt={2} color={'gray.300'} fontFamily={'heading'} fontSize={'md'}>Meios de pagamento aceitos</Text>
             <View>
-              <CustomCheckbox
-                label="Boleto"
-                value={paymentMethods.boleto}
-                onValueChange={(value) => handlePaymentMethodChange('boleto', value)}
-              />
-              <CustomCheckbox
-                label="Pix"
-                value={paymentMethods.pix}
-                onValueChange={(value) => handlePaymentMethodChange('pix', value)}
-              />
-              <CustomCheckbox
-                label="Dinheiro"
-                value={paymentMethods.dinheiro}
-                onValueChange={(value) => handlePaymentMethodChange('dinheiro', value)}
-              />
-              <CustomCheckbox
-                label="Cartão de Crédito"
-                value={paymentMethods.cartaoCredito}
-                onValueChange={(value) => handlePaymentMethodChange('cartaoCredito', value)}
-              />
-              <CustomCheckbox
-                label="Depósito Bancário"
-                value={paymentMethods.depositoBancario}
-                onValueChange={(value) => handlePaymentMethodChange('depositoBancario', value)}
-              />
+              {Object.keys(initialPaymentMethods).map((method) => (
+                <Controller
+                  key={method}
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <CustomCheckbox
+                      label={method.charAt(0).toUpperCase() + method.slice(1)}
+                      value={value}
+                      onValueChange={value => {
+                        onChange(value);
+                        handlePaymentMethodChange(method as keyof PaymentMethods, value);
+                      }}
+                    />
+                  )}
+                  name={`paymentMethods.${method}`}
+                  defaultValue={paymentMethods[method as keyof PaymentMethods]}
+                />
+              ))}
             </View>
-
-
 
           </VStack>
           <View style={{
@@ -147,7 +200,7 @@ export function AdCreation() {
             width: '100%',
             backgroundColor: 'white',
             paddingHorizontal: 20,
-          }} >
+          }}>
             <TouchableOpacity
               style={{
                 flex: 1,
@@ -159,7 +212,7 @@ export function AdCreation() {
                 borderRadius: 10,
                 alignItems: 'center',
               }}
-              onPress={HandleGoBack} >
+              onPress={HandleGoBack}>
               <Text fontFamily={'heading'}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -173,11 +226,10 @@ export function AdCreation() {
                 borderRadius: 10,
                 alignItems: 'center',
               }}
-              onPress={handlePreAdPage}>
+              onPress={handleSubmit(handlePreAdPage)}>
               <Text fontFamily={'heading'} color={'white'}>Avançar</Text>
             </TouchableOpacity>
           </View>
-
         </Center>
       </VStack>
     </ScrollView>

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Image, View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-
 import { X, PlusSquare } from 'phosphor-react-native';
 
-const ImagePickerComponent: React.FC = () => {
+interface ImagePickerComponentProps {
+  onImagesSelected: (images: string[]) => void;
+}
+
+const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({ onImagesSelected }) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   const pickImages = async () => {
@@ -23,12 +26,16 @@ const ImagePickerComponent: React.FC = () => {
 
     if (!result.canceled && result.assets) {
       const selectedUris = result.assets.map(asset => asset.uri);
-      setSelectedImages([...selectedImages, ...selectedUris]);
+      const newSelectedImages = [...selectedImages, ...selectedUris];
+      setSelectedImages(newSelectedImages);
+      onImagesSelected(newSelectedImages);
     }
   };
 
   const removeImage = (uri: string) => {
-    setSelectedImages(selectedImages.filter(imageUri => imageUri !== uri));
+    const newSelectedImages = selectedImages.filter(imageUri => imageUri !== uri);
+    setSelectedImages(newSelectedImages);
+    onImagesSelected(newSelectedImages);
   };
 
   return (
@@ -59,11 +66,6 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
     width: '100%',
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    // marginBottom: 10,
-  },
   imageContainer: {
     flexDirection: 'row',
   },
@@ -86,7 +88,6 @@ const styles = StyleSheet.create({
   },
   addButton: {
     alignSelf: 'center',
-    // padding: 2,
     width: 100,
     height: 100,
     borderRadius: 5,

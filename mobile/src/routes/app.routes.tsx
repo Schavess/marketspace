@@ -14,7 +14,15 @@ type AppRoutes = {
   myaddetail: undefined;
   adedition: undefined;
   adcreation: undefined;
-  preadvisualization: undefined;
+  preadvisualization: {
+    name: string;
+    description: string;
+    price: number;
+    isNew: string;
+    accept_trade: string;
+    paymentMethods: string;
+    selectedImages: string[];
+  };
 }
 const { Navigator, Screen } = createNativeStackNavigator<AppRoutes>();
 
