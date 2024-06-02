@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import { api } from '@services/api';
 import { useAuth } from '@hooks/useAuth';
+import { useIsFocused } from '@react-navigation/native';
 
 import { VStack, Text, HStack, Image, Input, Button as NBButton } from 'native-base';
 import { THEME } from '../theme';
@@ -12,57 +13,57 @@ import { Button } from '@components/Button';
 import { Item } from '@components/Item';
 import { FilterModalPure } from '@components/FilterModalPure';
 
-const DATA = [
-  {
-    id: '1',
-    imageUrl: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg',
-    userAvatar: 'https://avatars.githubusercontent.com/u/39462847?v=4',
-    is_new: true,
-    name: 'Tênis vermelho 1',
-    price: '59,90',
-    is_active: true,
-  },
-  {
-    id: '2',
-    imageUrl: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg',
-    userAvatar: 'https://avatars.githubusercontent.com/u/39462847?v=4',
-    is_new: false,
-    name: 'Tênis vermelho 2',
-    price: '59,90',
-    is_active: true,
-  },
-  {
-    id: '3',
-    imageUrl: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg',
-    userAvatar: 'https://avatars.githubusercontent.com/u/39462847?v=4',
-    is_new: false,
-    name: 'Tênis vermelho 3',
-    price: '59,90',
-    is_active: true,
-  },
-  {
-    id: '4',
-    imageUrl: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg',
-    userAvatar: 'https://avatars.githubusercontent.com/u/39462847?v=4',
-    is_new: false,
-    name: 'Tênis vermelho 4',
-    price: '59,90',
-    is_active: false,
-  },
-  // Adicione mais itens conforme necessário
-];
+import { dataProps } from '@dtos/ProductsDTO';
+import { MyProductsDTO } from '@dtos/MyProductsDTO';
+// type dataProps = {
+//   id: string,
+//   name: string,
+//   price: number,
+//   is_new: boolean,
+//   accept_trade: boolean,
+//   product_images: [
+//     {
+//       path: string;
+//       id: string;
+//     }
+//   ],
+//   payment_methods: [
+//     {
+//       key: string;
+//       name: string;
+//     }
+//   ],
+//   user: {
+//     name: string;
+//     avatar: string;
+//   }
+// }
+
 
 export function Home() {
 
   const { user } = useAuth();
-
-  console.log(user);
-
   const navigation = useNavigation<any>();
+  const isFocused = useIsFocused();
+
+  const [adsData, setAdsData] = useState<dataProps[]>([]);
+  const [myAdsData, setMyAdsData] = useState<MyProductsDTO[]>([]);
+
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const openModal = useCallback(() => setIsModalVisible(true), []);
   const closeModal = useCallback(() => setIsModalVisible(false), []);
+
+  const fetchAds = async () => {
+    const response = await api.get('/products');
+    setAdsData(response.data);
+  }
+
+  const fetchMyOwnAds = async () => {
+    const response = await api.get('users/products');
+    setMyAdsData(response.data);
+
+  }
 
   function handleNavigateToMyAdds() {
     navigation.navigate('myAds')
@@ -70,6 +71,18 @@ export function Home() {
   function handleNavigateToAdCreation() {
     navigation.navigate('adcreation')
   }
+
+  useEffect(() => {
+    fetchMyOwnAds();
+    fetchAds();
+  }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchAds();
+      fetchMyOwnAds();
+    }
+  }, [isFocused]);
 
   const renderHeader = () => (
     <VStack w={'100%'} >
@@ -109,7 +122,7 @@ export function Home() {
         <HStack w={'full'}>
           <TagSimple color={THEME.colors.blue_light} size={30} style={{ transform: [{ rotate: '225deg' }], alignSelf: 'center' }} />
           <VStack px={4}>
-            <Text fontSize={'xl'} fontFamily={'heading'}>4</Text>
+            <Text fontSize={'xl'} fontFamily={'heading'}>{myAdsData.length}</Text>
             <Text>anúncios ativos</Text>
           </VStack>
           <HStack p={4} flex={1} justifyContent={'flex-end'} alignSelf={'center'}>
@@ -160,16 +173,15 @@ export function Home() {
   );
 
 
-
   return (
     <>
-
       <FlatList
-        data={DATA}
+        data={adsData}
         renderItem={({ item }) => (
           <Item
-            imageUrl={item.imageUrl}
-            userAvatar={item.userAvatar}
+            imageUrl={item.product_images.map(image => `${api.defaults.baseURL}/images/${image.path}`)
+            }
+            userAvatar={`${api.defaults.baseURL}/images/${item.user.avatar}`}
             is_new={item.is_new}
             name={item.name}
             price={item.price}

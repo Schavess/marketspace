@@ -7,11 +7,11 @@ import { useNavigation } from '@react-navigation/native';
 
 type ItemProps = {
   name: string;
-  imageUrl: string;
+  imageUrl: string[];
   userAvatar: string;
   is_new: boolean;
   is_active?: boolean;
-  price: string;
+  price: number;
 };
 
 
@@ -37,12 +37,13 @@ export function Item({ imageUrl, userAvatar, is_new, is_active, name, price }: I
         borderRadius="lg"
         overflow="hidden"
         height={'250px'}
+        width={'180px'}
         borderColor="coolGray.200"
         shadow="3"
         bg='white'
         m="1"
       >
-        <Image source={{ uri: imageUrl } as ImageSourcePropType} alt={name} style={{ width: '100%', height: 150 }} />
+        <Image source={{ uri: imageUrl[0] } as ImageSourcePropType} alt={name} style={{ width: '100%', height: 150 }} onError={(error) => console.log(error)} />
         {!is_active && (
           <Box
             position="absolute"
