@@ -1,4 +1,4 @@
-export type dataProps = {
+export type ProductDTO = {
   id: string,
   name: string,
   price: number,
@@ -21,3 +21,7 @@ export type dataProps = {
     avatar: string;
   }
 }
+
+export type dataProps = {
+  products: ProductDTO[];
+};

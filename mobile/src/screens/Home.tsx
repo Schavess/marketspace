@@ -13,42 +13,22 @@ import { Button } from '@components/Button';
 import { Item } from '@components/Item';
 import { FilterModalPure } from '@components/FilterModalPure';
 
-import { dataProps } from '@dtos/ProductsDTO';
-import { MyProductsDTO } from '@dtos/MyProductsDTO';
-// type dataProps = {
-//   id: string,
-//   name: string,
-//   price: number,
-//   is_new: boolean,
-//   accept_trade: boolean,
-//   product_images: [
-//     {
-//       path: string;
-//       id: string;
-//     }
-//   ],
-//   payment_methods: [
-//     {
-//       key: string;
-//       name: string;
-//     }
-//   ],
-//   user: {
-//     name: string;
-//     avatar: string;
-//   }
-// }
+import { ProductDTO } from '@dtos/ProductsDTO';
+import { MyProductsDataDTO } from '@dtos/MyProductsDTO';
 
+import { useUserAds } from '@contexts/AdsUserProvider';
 
 export function Home() {
 
   const { user } = useAuth();
+  const { ads, isLoading, fetchUserAds } = useUserAds();
+
+
   const navigation = useNavigation<any>();
   const isFocused = useIsFocused();
 
-  const [adsData, setAdsData] = useState<dataProps[]>([]);
-  const [myAdsData, setMyAdsData] = useState<MyProductsDTO[]>([]);
-
+  const [adsData, setAdsData] = useState<ProductDTO[]>([]);
+  const [myAdsData, setMyAdsData] = useState<MyProductsDataDTO[]>([]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const openModal = useCallback(() => setIsModalVisible(true), []);
@@ -62,7 +42,6 @@ export function Home() {
   const fetchMyOwnAds = async () => {
     const response = await api.get('users/products');
     setMyAdsData(response.data);
-
   }
 
   function handleNavigateToMyAdds() {
@@ -73,20 +52,20 @@ export function Home() {
   }
 
   useEffect(() => {
-    fetchMyOwnAds();
+    fetchUserAds();
     fetchAds();
   }, []);
 
   useEffect(() => {
     if (isFocused) {
       fetchAds();
-      fetchMyOwnAds();
+      fetchUserAds();
     }
   }, [isFocused]);
 
   const renderHeader = () => (
     <VStack w={'100%'} >
-      <HStack pt={'80px'} justifyContent={'space-between'}>
+      <HStack pt={'20px'} justifyContent={'space-between'}>
         <Image
           source={
             user.avatar
@@ -122,7 +101,7 @@ export function Home() {
         <HStack w={'full'}>
           <TagSimple color={THEME.colors.blue_light} size={30} style={{ transform: [{ rotate: '225deg' }], alignSelf: 'center' }} />
           <VStack px={4}>
-            <Text fontSize={'xl'} fontFamily={'heading'}>{myAdsData.length}</Text>
+            <Text fontSize={'xl'} fontFamily={'heading'}>{ads && ads.products ? ads.products.length : 0}</Text>
             <Text>anúncios ativos</Text>
           </VStack>
           <HStack p={4} flex={1} justifyContent={'flex-end'} alignSelf={'center'}>
@@ -177,6 +156,7 @@ export function Home() {
     <>
       <FlatList
         data={adsData}
+        // renderItem={({ item }) => <Item {...item} />}
         renderItem={({ item }) => (
           <Item
             imageUrl={item.product_images.map(image => `${api.defaults.baseURL}/images/${image.path}`)

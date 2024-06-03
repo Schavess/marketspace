@@ -1,3 +1,6 @@
+import React from 'react';
+import { SafeAreaView, StatusBar } from 'react-native';
+
 import { AuthRoutes } from "./auth.routes";
 import { AppRoutes } from "./app.routes";
 import { useTheme, Box } from 'native-base';
@@ -22,9 +25,16 @@ export function Routes() {
 
   return (
     <Box flex={1} bg="white">
-      <NavigationContainer theme={theme}>
-        {user.id ? <AppRoutes /> : <AuthRoutes />}
-      </NavigationContainer>
+      <StatusBar
+        barStyle="dark-content" // Define o estilo do texto e ícones para claro
+        backgroundColor={'white'} // Define a cor de fundo da barra de status
+      />
+      <SafeAreaView style={{ flex: 1 }}>
+
+        <NavigationContainer theme={theme}>
+          {user.id ? <AppRoutes /> : <AuthRoutes />}
+        </NavigationContainer>
+      </SafeAreaView>
     </Box>
   );
 
