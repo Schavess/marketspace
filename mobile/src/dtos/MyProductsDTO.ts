@@ -6,5 +6,7 @@ export type MyProductsDTO = dataProps & {
 };
 
 export type MyProductsDataDTO = {
+  length: any;
+  filter(arg0: (data: any) => any): unknown;
   products: MyProductsDTO[];
 };

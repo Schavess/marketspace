@@ -1,32 +1,29 @@
-
+import React from 'react';
 import { Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
 import { Box, Text, VStack, HStack, Badge, Avatar } from 'native-base';
 
 import { THEME } from '../theme';
 import { useNavigation } from '@react-navigation/native';
+import { api } from '@services/api';
 
-type ItemProps = {
-  name: string;
-  imageUrl: string[];
+interface ItemProps {
+  product_images: { path: string, id: string }[];
   userAvatar: string;
   is_new: boolean;
-  is_active?: boolean;
+  is_active: boolean;
+  name: string;
   price: number;
-};
+}
 
-
-export function Item({ imageUrl, userAvatar, is_new, is_active, name, price }: ItemProps) {
-
+export function Item({ product_images, userAvatar, is_new, is_active, name, price }: ItemProps) {
   const navigation = useNavigation<any>();
 
   const isMineAd = true;
+
   function handleClickItem() {
-
     if (isMineAd) {
-
       navigation.navigate('myaddetail');
     } else {
-
       navigation.navigate('addetail');
     }
   }
@@ -43,7 +40,7 @@ export function Item({ imageUrl, userAvatar, is_new, is_active, name, price }: I
         bg='white'
         m="1"
       >
-        <Image source={{ uri: imageUrl[0] } as ImageSourcePropType} alt={name} style={{ width: '100%', height: 150 }} onError={(error) => console.log(error)} />
+        <Image source={{ uri: product_images[0]?.path ? `${api.defaults.baseURL}/images/${product_images[0].path}` : '' } as ImageSourcePropType} alt={name} style={{ width: '100%', height: 150 }} onError={(error) => console.log(error)} />
         {!is_active && (
           <Box
             position="absolute"
@@ -97,7 +94,7 @@ export function Item({ imageUrl, userAvatar, is_new, is_active, name, price }: I
           <Text fontSize="lg" fontFamily={'body'} color="gray.100">
             {name}
           </Text>
-          <HStack alignItems={'baseline'} >
+          <HStack alignItems={'baseline'}>
             <Text fontSize="md" fontFamily={'heading'} color="black">
               R$
             </Text>
@@ -108,5 +105,5 @@ export function Item({ imageUrl, userAvatar, is_new, is_active, name, price }: I
         </VStack>
       </Box>
     </TouchableOpacity>
-  )
+  );
 }

@@ -14,21 +14,20 @@ import { Item } from '@components/Item';
 import { FilterModalPure } from '@components/FilterModalPure';
 
 import { ProductDTO } from '@dtos/ProductsDTO';
-import { MyProductsDataDTO } from '@dtos/MyProductsDTO';
+
+// import { MyProductsDataDTO } from '@dtos/MyProductsDTO';
 
 import { useUserAds } from '@contexts/AdsUserProvider';
 
 export function Home() {
 
   const { user } = useAuth();
-  const { ads, isLoading, fetchUserAds } = useUserAds();
-
+  const { ads, fetchUserAds } = useUserAds();
 
   const navigation = useNavigation<any>();
   const isFocused = useIsFocused();
 
   const [adsData, setAdsData] = useState<ProductDTO[]>([]);
-  const [myAdsData, setMyAdsData] = useState<MyProductsDataDTO[]>([]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const openModal = useCallback(() => setIsModalVisible(true), []);
@@ -39,11 +38,6 @@ export function Home() {
     setAdsData(response.data);
   }
 
-  const fetchMyOwnAds = async () => {
-    const response = await api.get('users/products');
-    setMyAdsData(response.data);
-  }
-
   function handleNavigateToMyAdds() {
     navigation.navigate('myAds')
   }
@@ -52,8 +46,8 @@ export function Home() {
   }
 
   useEffect(() => {
-    fetchUserAds();
     fetchAds();
+    fetchUserAds();
   }, []);
 
   useEffect(() => {
@@ -101,7 +95,7 @@ export function Home() {
         <HStack w={'full'}>
           <TagSimple color={THEME.colors.blue_light} size={30} style={{ transform: [{ rotate: '225deg' }], alignSelf: 'center' }} />
           <VStack px={4}>
-            <Text fontSize={'xl'} fontFamily={'heading'}>{ads && ads.products ? ads.products.length : 0}</Text>
+            <Text fontSize={'xl'} fontFamily={'heading'}>{ads ? ads.length : 0}</Text>
             <Text>anúncios ativos</Text>
           </VStack>
           <HStack p={4} flex={1} justifyContent={'flex-end'} alignSelf={'center'}>
@@ -156,11 +150,9 @@ export function Home() {
     <>
       <FlatList
         data={adsData}
-        // renderItem={({ item }) => <Item {...item} />}
         renderItem={({ item }) => (
           <Item
-            imageUrl={item.product_images.map(image => `${api.defaults.baseURL}/images/${image.path}`)
-            }
+            product_images={item.product_images}
             userAvatar={`${api.defaults.baseURL}/images/${item.user.avatar}`}
             is_new={item.is_new}
             name={item.name}
