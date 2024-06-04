@@ -8,42 +8,51 @@ import { X } from 'phosphor-react-native';
 type FilterModalProps = {
   visible: boolean;
   onClose: () => void;
+  onApply: (filters: any) => void;
+  filters: any; // Adicione esta linha
+  setFilters: (filters: any) => void; // Adicione esta linha
 };
 
 type PaymentMethods = {
   boleto: boolean;
   pix: boolean;
-  dinheiro: boolean;
-  cartaoCredito: boolean;
-  depositoBancario: boolean;
+  cash: boolean;
+  card: boolean;
+  deposit: boolean;
 };
 
 const initialPaymentMethods: PaymentMethods = {
   boleto: true,
   pix: true,
-  dinheiro: true,
-  cartaoCredito: true,
-  depositoBancario: true,
+  cash: true,
+  card: true,
+  deposit: true,
 };
 
-export const FilterModalPure = React.memo(({ visible, onClose }: FilterModalProps) => {
-  const [condition, setCondition] = useState('novo');
-  const [acceptsExchange, setAcceptsExchange] = useState(false);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethods>(initialPaymentMethods);
+export const FilterModalPure = React.memo(({ visible, onClose, onApply, filters, setFilters }: FilterModalProps) => {
+  const [condition, setCondition] = useState(filters.condition);
+  const [acceptsExchange, setAcceptsExchange] = useState(filters.acceptsExchange);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethods>(filters.paymentMethods || initialPaymentMethods);
 
   useEffect(() => {
     if (!visible) {
       // Reset filters when modal closes
-      setCondition('novo');
-      setAcceptsExchange(false);
-      setPaymentMethods(initialPaymentMethods);
+      setCondition(filters.condition);
+      setAcceptsExchange(filters.acceptsExchange);
+      setPaymentMethods(filters.paymentMethods || initialPaymentMethods);
     }
   }, [visible]);
 
   const handleApplyFilters = useCallback(() => {
+    const newFilters = {
+      condition,
+      acceptsExchange,
+      paymentMethods
+    };
+    setFilters(newFilters); // Atualize os filtros no componente pai
+    onApply(newFilters); // Aplique os filtros
     onClose();
-    // Apply your filters logic here
-  }, [onClose]);
+  }, [condition, acceptsExchange, paymentMethods, onApply, onClose]);
 
   const handlePaymentMethodChange = useCallback((key: keyof PaymentMethods, value: boolean) => {
     setPaymentMethods(prev => ({
@@ -102,18 +111,18 @@ export const FilterModalPure = React.memo(({ visible, onClose }: FilterModalProp
               />
               <CustomCheckbox
                 label="Dinheiro"
-                value={paymentMethods.dinheiro}
-                onValueChange={(value) => handlePaymentMethodChange('dinheiro', value)}
+                value={paymentMethods.cash}
+                onValueChange={(value) => handlePaymentMethodChange('cash', value)}
               />
               <CustomCheckbox
                 label="Cartão de Crédito"
-                value={paymentMethods.cartaoCredito}
-                onValueChange={(value) => handlePaymentMethodChange('cartaoCredito', value)}
+                value={paymentMethods.card}
+                onValueChange={(value) => handlePaymentMethodChange('card', value)}
               />
               <CustomCheckbox
                 label="Depósito Bancário"
-                value={paymentMethods.depositoBancario}
-                onValueChange={(value) => handlePaymentMethodChange('depositoBancario', value)}
+                value={paymentMethods.deposit}
+                onValueChange={(value) => handlePaymentMethodChange('deposit', value)}
               />
             </View>
           </View>

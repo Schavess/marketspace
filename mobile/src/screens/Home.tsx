@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { TouchableOpacity, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native';
 import { api } from '@services/api';
 import { useAuth } from '@hooks/useAuth';
 import { useIsFocused } from '@react-navigation/native';
@@ -15,35 +15,88 @@ import { FilterModalPure } from '@components/FilterModalPure';
 
 import { ProductDTO } from '@dtos/ProductsDTO';
 
-// import { MyProductsDataDTO } from '@dtos/MyProductsDTO';
-
 import { useUserAds } from '@contexts/AdsUserProvider';
 
-export function Home() {
 
+type PaymentMethodKey = 'boleto' | 'pix' | 'cash' | 'card' | 'deposit';
+
+type Filters = {
+  condition: 'novo' | 'usado' | '';
+  acceptsExchange: boolean;
+  paymentMethods: Record<PaymentMethodKey, boolean>;
+};
+
+
+
+export function Home() {
   const { user } = useAuth();
   const { ads, fetchUserAds } = useUserAds();
 
+
   const navigation = useNavigation<any>();
   const isFocused = useIsFocused();
-
-  const [adsData, setAdsData] = useState<ProductDTO[]>([]);
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const openModal = useCallback(() => setIsModalVisible(true), []);
   const closeModal = useCallback(() => setIsModalVisible(false), []);
 
+  const [adsData, setAdsData] = useState<ProductDTO[]>([]);
+  const [filteredAdsData, setFilteredAdsData] = useState<ProductDTO[]>([]);
+  const [inputSearchData, setInputSearchData] = useState('');
+
+  const [filters, setFilters] = useState<Filters>({
+    condition: 'novo',
+    acceptsExchange: true,
+    paymentMethods: {
+      boleto: true,
+      card: true,
+      cash: true,
+      deposit: true,
+      pix: true
+    }
+  });
+
   const fetchAds = async () => {
     const response = await api.get('/products');
     setAdsData(response.data);
+    setFilteredAdsData(response.data);
   }
 
   function handleNavigateToMyAdds() {
-    navigation.navigate('myAds')
+    navigation.navigate('myAds');
   }
+
   function handleNavigateToAdCreation() {
-    navigation.navigate('adcreation')
+    navigation.navigate('adcreation');
   }
+
+  function handleSearchInput() {
+    const filteredData = adsData.filter(data =>
+      data.name.toLowerCase().includes(inputSearchData.toLowerCase())
+    );
+    setFilteredAdsData(filteredData);
+  }
+
+  const applyFilters = (filters: Filters) => {
+    if (!filters) return;
+
+    setFilters(filters);
+
+    const filtered = adsData.filter(item => {
+      const conditionMatch = filters.condition ? (filters.condition === 'novo' ? item.is_new : !item.is_new) : true;
+
+      const exchangeMatch = filters.acceptsExchange !== undefined ? item.accept_trade === filters.acceptsExchange : true;
+
+      const itemPaymentMethodKeys = item.payment_methods.map(method => method.key);
+
+      const paymentMethodsMatch = filters.paymentMethods ? Object.keys(filters.paymentMethods).some(
+        key => filters.paymentMethods[key as PaymentMethodKey] && itemPaymentMethodKeys.includes(key)
+      ) : true;
+
+      return conditionMatch && exchangeMatch && paymentMethodsMatch;
+    });
+
+    setFilteredAdsData(filtered);
+  };
 
   useEffect(() => {
     fetchAds();
@@ -57,15 +110,11 @@ export function Home() {
     }
   }, [isFocused]);
 
-  const renderHeader = () => (
-    <VStack w={'100%'} >
+  const renderHeader = useMemo(() => (
+    <VStack w={'100%'}>
       <HStack pt={'20px'} justifyContent={'space-between'}>
         <Image
-          source={
-            user.avatar
-              ? { uri: `${api.defaults.baseURL}/images/${user.avatar}` }
-              : defaulUserPhotoImg
-          }
+          source={user.avatar ? { uri: `${api.defaults.baseURL}/images/${user.avatar}` } : defaulUserPhotoImg}
           alt='Avatar image'
           width={50}
           height={50}
@@ -83,9 +132,7 @@ export function Home() {
             w={'150px'}
             borderRadius={5}
             icon={<Plus color='white' size={20} />}
-            _pressed={{
-              bg: THEME.colors.gray[500]
-            }}
+            _pressed={{ bg: THEME.colors.gray[500] }}
             onPress={handleNavigateToAdCreation}
           />
         </VStack>
@@ -116,40 +163,34 @@ export function Home() {
           fontSize={'md'}
           fontFamily={'body'}
           flex={1}
-          _focus={{
-            bg: THEME.colors.gray[600],
-            borderWidth: 1,
-            borderColor: 'blue_light'
-          }}
+          _focus={{ bg: THEME.colors.gray[600], borderWidth: 1, borderColor: 'blue_light' }}
+          value={inputSearchData}
+          onChangeText={text => setInputSearchData(text)}
+          onSubmitEditing={handleSearchInput}
         />
         <NBButton
           bg={'white'}
-          _pressed={{
-            bg: THEME.colors.gray[500]
-          }}
+          _pressed={{ bg: THEME.colors.gray[500] }}
+          onPress={handleSearchInput}
         >
           <MagnifyingGlass color={'black'} size={25} />
         </NBButton>
         <Text color={'gray.500'} fontFamily={'body'} fontSize={'xl'}>|</Text>
         <NBButton
           bg={'white'}
-          _pressed={{
-            bg: THEME.colors.gray[500],
-
-          }}
+          _pressed={{ bg: THEME.colors.gray[500] }}
           onPress={openModal}
         >
           <Sliders color={'black'} size={25} />
         </NBButton>
       </HStack>
-    </VStack >
-  );
-
+    </VStack>
+  ), [user, ads, inputSearchData]);
 
   return (
     <>
       <FlatList
-        data={adsData}
+        data={filteredAdsData}
         renderItem={({ item }) => (
           <Item
             product_images={item.product_images}
@@ -162,14 +203,16 @@ export function Home() {
         )}
         keyExtractor={item => item.id}
         numColumns={2}
-        columnWrapperStyle={{
-        }}
-        contentContainerStyle={{
-          alignItems: 'center',
-        }}
+        contentContainerStyle={{ alignItems: 'center' }}
         ListHeaderComponent={renderHeader}
       />
-      <FilterModalPure visible={isModalVisible} onClose={closeModal} />
+      <FilterModalPure
+        visible={isModalVisible}
+        onClose={closeModal}
+        onApply={applyFilters}
+        filters={filters}
+        setFilters={setFilters}
+      />
     </>
   );
 }
