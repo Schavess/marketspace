@@ -4,19 +4,15 @@ import { useNavigation } from '@react-navigation/native';
 import { api } from '@services/api';
 import { useAuth } from '@hooks/useAuth';
 import { useIsFocused } from '@react-navigation/native';
-
-import { VStack, Text, HStack, Image, Input, Button as NBButton } from 'native-base';
+import { VStack, Text, HStack, Image, Input, Button as NBButton, Center } from 'native-base';
 import { THEME } from '../theme';
 import { Plus, TagSimple, ArrowRight, MagnifyingGlass, Sliders } from 'phosphor-react-native';
 import defaulUserPhotoImg from '../assets/Avatar.png';
 import { Button } from '@components/Button';
 import { Item } from '@components/Item';
 import { FilterModalPure } from '@components/FilterModalPure';
-
 import { ProductDTO } from '@dtos/ProductsDTO';
-
 import { useUserAds } from '@contexts/AdsUserProvider';
-
 
 type PaymentMethodKey = 'boleto' | 'pix' | 'cash' | 'card' | 'deposit';
 
@@ -26,23 +22,17 @@ type Filters = {
   paymentMethods: Record<PaymentMethodKey, boolean>;
 };
 
-
-
 export function Home() {
   const { user } = useAuth();
   const { ads, fetchUserAds } = useUserAds();
-
-
   const navigation = useNavigation<any>();
   const isFocused = useIsFocused();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const openModal = useCallback(() => setIsModalVisible(true), []);
   const closeModal = useCallback(() => setIsModalVisible(false), []);
-
   const [adsData, setAdsData] = useState<ProductDTO[]>([]);
   const [filteredAdsData, setFilteredAdsData] = useState<ProductDTO[]>([]);
   const [inputSearchData, setInputSearchData] = useState('');
-
   const [filters, setFilters] = useState<Filters>({
     condition: 'novo',
     acceptsExchange: true,
@@ -58,8 +48,8 @@ export function Home() {
   const fetchAds = async () => {
     const response = await api.get('/products');
     setAdsData(response.data);
-    setFilteredAdsData(response.data);
-  }
+    setFilteredAdsData(response.data); // Initialize filteredAdsData
+  };
 
   function handleNavigateToMyAdds() {
     navigation.navigate('myAds');
@@ -69,34 +59,29 @@ export function Home() {
     navigation.navigate('adcreation');
   }
 
-  function handleSearchInput() {
+  const handleSearchInput = useCallback(() => {
     const filteredData = adsData.filter(data =>
       data.name.toLowerCase().includes(inputSearchData.toLowerCase())
     );
     setFilteredAdsData(filteredData);
-  }
+  }, [inputSearchData, adsData]);
 
-  const applyFilters = (filters: Filters) => {
+  const applyFilters = useCallback((filters: Filters) => {
     if (!filters) return;
-
     setFilters(filters);
 
     const filtered = adsData.filter(item => {
       const conditionMatch = filters.condition ? (filters.condition === 'novo' ? item.is_new : !item.is_new) : true;
-
       const exchangeMatch = filters.acceptsExchange !== undefined ? item.accept_trade === filters.acceptsExchange : true;
-
       const itemPaymentMethodKeys = item.payment_methods.map(method => method.key);
-
       const paymentMethodsMatch = filters.paymentMethods ? Object.keys(filters.paymentMethods).some(
         key => filters.paymentMethods[key as PaymentMethodKey] && itemPaymentMethodKeys.includes(key)
       ) : true;
-
       return conditionMatch && exchangeMatch && paymentMethodsMatch;
     });
 
     setFilteredAdsData(filtered);
-  };
+  }, [adsData]);
 
   useEffect(() => {
     fetchAds();
@@ -205,7 +190,13 @@ export function Home() {
         numColumns={2}
         contentContainerStyle={{ alignItems: 'center' }}
         ListHeaderComponent={renderHeader}
+        ListEmptyComponent={() => (
+          <Center flex={1} mt={10}>
+            <Text>Nenhum anúncio encontrado.</Text>
+          </Center>
+        )}
       />
+
       <FilterModalPure
         visible={isModalVisible}
         onClose={closeModal}
@@ -215,4 +206,4 @@ export function Home() {
       />
     </>
   );
-}
+}  
