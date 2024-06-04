@@ -1,14 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { HStack, VStack, View, Text, Image, Badge, Button as NBButton } from 'native-base';
 import { ArrowLeft, Money, WhatsappLogo, QrCode, Barcode, CreditCard, Bank } from 'phosphor-react-native';
 
 import { MyCarousel } from '@components/MyCarousel'
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-import avatar from '@assets/Avatar.png';
+import { api } from '@services/api';
 
+import { Avatar } from '@assets/Avatar.png'
+
+interface PaymentMethod {
+  key: string;
+  name: string;
+}
+
+interface ProductImage {
+  id: string;
+  path: string;
+}
+interface User {
+  avatar: string;
+  name: string;
+  tel: string;
+}
+
+interface ItemData {
+  accept_trade: boolean;
+  created_at: string;
+  description: string;
+  id: string;
+  is_active: boolean;
+  is_new: boolean;
+  name: string;
+  payment_methods: PaymentMethod[];
+  price: number;
+  product_images: ProductImage[];
+  updated_at: string;
+  user: User;
+  user_id: string;
+}
+
+const paymentIcons: { [key: string]: JSX.Element } = {
+  'Boleto': <Barcode size={16} />,
+  'Pix': <QrCode size={16} />,
+  'Dinheiro': <Money size={16} />,
+  'Cartão de Crédito': <CreditCard size={16} />,
+  'Depósito Bancário': <Bank size={16} />,
+};
 
 const CARROUSEL_DATA = [
   { thumbnail: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', title: 'Photo 1' },
@@ -25,9 +65,30 @@ export function AdDetail() {
 
   const navigation = useNavigation();
 
+  const route = useRoute<any>();
+
+  const {
+    item_id,
+  } = route.params;
+
+  const [itemData, setItemData] = useState<ItemData | null>(null);
+
+  const fetchItemData = async () => {
+    const response = await api.get(`/products/${item_id}`);
+
+    setItemData(response.data);
+    console.log(response.data);
+  }
+
+  console.log(itemData?.user.avatar);
+
   function HandleGoBack() {
     navigation.goBack();
   }
+
+  useEffect(() => {
+    fetchItemData();
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
@@ -42,12 +103,12 @@ export function AdDetail() {
         </SafeAreaView>
         <HStack w={'85%'} alignItems={'center'}>
           <Image
-            source={avatar}
+            source={itemData?.user.avatar ? { uri: `${api.defaults.baseURL}/images/${itemData?.user.avatar}` } : Avatar}
             alt='Avatar image'
             width={'35px'}
             height={'35px'}
           />
-          <Text pl={3} fontSize={'md'} fontFamily={'body'}>Nome do Dono do anúncio</Text>
+          <Text pl={3} fontSize={'md'} fontFamily={'body'}>{itemData?.user.name}</Text>
         </HStack>
         <HStack w={'85%'} pt={2}>
           <Badge
@@ -55,17 +116,17 @@ export function AdDetail() {
             borderRadius={5}
             alignSelf={'flex-start'}
           >
-            <Text fontSize={'sm'} fontFamily={'heading'}>NOVO</Text>
+            <Text fontSize={'sm'} fontFamily={'heading'}>{itemData?.is_new ? 'NOVO' : 'USADO'}</Text>
           </Badge>
         </HStack>
         <HStack w={'85%'} pt={2} alignItems={'flex-end'}>
           <Text flex={1} fontSize={'xl'} fontFamily={'heading'}>Tênis</Text>
           <Text color={'blue_light'} fontSize={'md'} fontFamily={'heading'}>R$</Text>
-          <Text pl={2} color={'blue_light'} fontSize={'lg'} fontFamily={'heading'}>120,00</Text>
+          <Text pl={2} color={'blue_light'} fontSize={'lg'} fontFamily={'heading'}>{itemData?.price}</Text>
         </HStack>
         <HStack w={'85%'} pt={2} alignItems={'flex-end'}>
           <Text flex={1} fontSize={'sm'} fontFamily={'body'} textAlign={'justify'}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur iaculis nibh enim, eu vehicula dolor.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur iaculis nibh enim, eu vehicula dolor.
+            {itemData?.description}
           </Text>
         </HStack>
         <HStack w={'85%'} pt={2} alignItems={'flex-end'}>
@@ -73,7 +134,7 @@ export function AdDetail() {
             Aceita troca?
           </Text>
           <Text ml={2} fontSize={'sm'} fontFamily={'body'} >
-            Sim
+            {itemData?.accept_trade ? 'Sim' : 'Não'}
           </Text>
         </HStack>
         <HStack w={'85%'} pt={2} alignItems={'flex-end'}>
@@ -82,39 +143,37 @@ export function AdDetail() {
           </Text>
         </HStack>
         <VStack w={'85%'}>
-
-          <HStack alignItems={'center'}>
-            <Barcode size={16} />
-            <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-              Boleto
-            </Text>
-          </HStack>
-          <HStack alignItems={'center'}>
-            <QrCode size={16} />
-            <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-              PIX
-            </Text>
-          </HStack>
-          <HStack alignItems={'center'}>
-            <Money size={16} />
-            <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-              Dinheiro
-            </Text>
-          </HStack>
-          <HStack alignItems={'center'}>
-            <CreditCard size={16} />
-            <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-              Cartão de Crédito
-            </Text>
-          </HStack>
-          <HStack alignItems={'center'}>
-            <Bank size={16} />
-            <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-              Depósito Bancário
-            </Text>
-          </HStack>
+          {itemData && itemData.payment_methods && itemData.payment_methods.map(method => {
+            const icon = paymentIcons[method.name];
+            return (
+              <React.Fragment key={method.key}>
+                {icon ? (
+                  <HStack alignItems={'center'}>
+                    {icon}
+                    <Text fontSize={'md'} fontFamily={'body'} pl={2}>
+                      {method.name}
+                    </Text>
+                  </HStack>
+                ) : (
+                  <HStack alignItems={'center'}>
+                    <Text fontSize={'md'} fontFamily={'body'} pl={2}>
+                      {method.name} - Icone não encontrado
+                    </Text>
+                  </HStack>
+                )}
+              </React.Fragment>
+            );
+          })}
         </VStack>
-        <HStack py={7} px={5} flex={1} w={'100%'} bg={'white'} alignItems={'center'}>
+        <HStack position={'absolute'}
+          bottom={0}
+          left={0}
+          right={0}
+          py={7}
+          px={5}
+          w={'100%'}
+          bg={'white'}
+          alignItems={'center'}>
           <HStack alignItems={'flex-end'}>
             <Text pl={2} color={'blue_light'} fontSize={'md'} fontFamily={'heading'}>R$</Text>
             <Text color={'blue_light'} fontSize={'xl'} fontFamily={'heading'}>120,00</Text>

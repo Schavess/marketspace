@@ -178,6 +178,8 @@ export function Home() {
         data={filteredAdsData}
         renderItem={({ item }) => (
           <Item
+            isMineAd={false}
+            item_id={item.id}
             product_images={item.product_images}
             userAvatar={`${api.defaults.baseURL}/images/${item.user.avatar}`}
             is_new={item.is_new}

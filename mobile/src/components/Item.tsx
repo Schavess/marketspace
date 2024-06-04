@@ -7,24 +7,24 @@ import { useNavigation } from '@react-navigation/native';
 import { api } from '@services/api';
 
 interface ItemProps {
+  item_id: string;
   product_images: { path: string, id: string }[];
   userAvatar: string;
+  isMineAd: boolean;
   is_new: boolean;
   is_active: boolean;
   name: string;
   price: number;
 }
 
-export function Item({ product_images, userAvatar, is_new, is_active, name, price }: ItemProps) {
+export function Item({ item_id, isMineAd, product_images, userAvatar, is_new, is_active, name, price }: ItemProps) {
   const navigation = useNavigation<any>();
-
-  const isMineAd = true;
 
   function handleClickItem() {
     if (isMineAd) {
-      navigation.navigate('myaddetail');
+      navigation.navigate('myaddetail', { item_id });
     } else {
-      navigation.navigate('addetail');
+      navigation.navigate('addetail', { item_id });
     }
   }
 
