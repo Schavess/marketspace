@@ -1,5 +1,6 @@
-import React from 'react';
-import { TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import * as FileSystem from 'expo-file-system';
+import { TouchableOpacity, SafeAreaView, ScrollView, Alert } from 'react-native';
 import { HStack, VStack, View, Text, Image, Badge, Button as NBButton, Center } from 'native-base';
 import { ArrowLeft, Money, WhatsappLogo, QrCode, Barcode, CreditCard, Bank } from 'phosphor-react-native';
 
@@ -12,21 +13,21 @@ import avatar from '@assets/Avatar.png';
 import { THEME } from '../theme';
 
 import { useRoute } from '@react-navigation/native';
+import { useAuth } from '@hooks/useAuth';
+import { api } from '@services/api';
 
 
 const CARROUSEL_DATA = [
   { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', id: 'Photo 1' },
   { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-03-768x768.jpg', id: 'Photo 2' },
-  { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-07-768x768.jpg', id: 'Photo 3' },
-  // Adicione mais itens conforme necessário
-  { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', id: 'Photo 4' },
-  { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-03-768x768.jpg', id: 'Photo 5' },
-  { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-07-768x768.jpg', id: 'Photo 6' },
-  // Adicione mais itens conforme necessário
 ];
+
+import defaulUserPhotoImg from '../assets/Avatar.png';
 
 export function PreAdVisualization() {
 
+  const { user } = useAuth();
+  const navigation = useNavigation<any>();
   const route = useRoute<any>();
 
   const {
@@ -39,17 +40,83 @@ export function PreAdVisualization() {
     selectedImages
   } = route.params;
 
-  const navigation = useNavigation<any>();
+  console.log(Object.entries(paymentMethods)
+    .filter(([key, value]) => value === true)
+    .map(([key, value]) => key));
 
-  console.log(paymentMethods);
-  console.log(selectedImages);
+  const [carouselData, setCarouselData] = useState([]);
+
+  useEffect(() => {
+    const createCarouselData = (filePaths: any) => {
+      return filePaths.map((filePath: string, index: number) => {
+        return {
+          path: filePath,
+          id: `Photo ${index + 1}`
+        };
+      });
+    };
+
+    setCarouselData(createCarouselData(selectedImages));
+  }, [selectedImages]);
 
   function HandleGoBack() {
     navigation.goBack();
   }
 
-  function handlePublishAd() {
-    navigation.navigate('addetail');
+  async function handlePublishAd() {
+
+    const product = {
+      name,
+      description,
+      price: parseFloat(price),
+      is_new: isNew == 'new',
+      accept_trade,
+      payment_methods: Object.entries(paymentMethods)
+        .filter(([key, value]) => value === true)
+        .map(([key, value]) => key),
+    }
+
+    let response = await api.post('/products', product);
+
+    const product_id = response.data.id;
+
+    try {
+      const formData = new FormData();
+      formData.append('product_id', product_id);
+
+      const images = await Promise.all(
+        selectedImages.map(async (image: string) => {
+          const fileInfo = await FileSystem.getInfoAsync(image);
+          const fileName = fileInfo.uri.split('/').pop();
+          const fileType = fileInfo.uri.split('.').pop();
+
+          return {
+            uri: fileInfo.uri,
+            name: fileName,
+            type: `image/${fileType}`,
+          };
+        })
+      );
+
+      images.forEach((image) => {
+        formData.append('images', image); // Ajuste aqui para 'images'
+      });
+
+      let response = await api.post('/products/images', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log(response.data)
+
+      Alert.alert('Sucesso!');
+
+    } catch (error) {
+      console.log(error);
+
+    }
+
   }
 
   return (
@@ -62,19 +129,20 @@ export function PreAdVisualization() {
         </Center>
       </VStack>
       <SafeAreaView style={{ width: '100%', alignItems: 'center' }}>
-        <MyCarousel data={CARROUSEL_DATA} />
+        <MyCarousel data={carouselData ? carouselData : CARROUSEL_DATA} notPublished />
       </SafeAreaView>
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
         <VStack w={'100%'} alignItems={'center'} >
           <HStack w={'85%'} alignItems={'center'}>
             <Image
-              source={avatar}
+              source={user.avatar ? { uri: `${api.defaults.baseURL}/images/${user.avatar}` } : defaulUserPhotoImg}
               alt='Avatar image'
               width={'35px'}
               height={'35px'}
+              borderRadius={'35px'}
             />
-            <Text pl={3} fontSize={'md'} fontFamily={'body'}>Nome do Dono do anúncio</Text>
+            <Text pl={3} fontSize={'md'} fontFamily={'body'}>{user.name}</Text>
           </HStack>
           <HStack w={'85%'} pt={2}>
             <Badge

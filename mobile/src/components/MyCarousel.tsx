@@ -14,16 +14,17 @@ interface Item {
 
 interface MyCarouselProps {
   data: Item[];
+  notPublished?: boolean;
 }
 
-export const MyCarousel: React.FC<MyCarouselProps> = ({ data }) => {
+export const MyCarousel: React.FC<MyCarouselProps> = ({ data, notPublished = false }) => {
   const [activeSlide, setActiveSlide] = useState(0);
 
   const numOfPhotos = data.length;
 
   const renderItem = ({ item }: { item: Item }) => (
     <View style={styles.item}>
-      <Image source={{ uri: `${api.defaults.baseURL}/images/${item.path}` }} style={styles.image} />
+      <Image source={notPublished ? { uri: item.path } : { uri: `${api.defaults.baseURL}/images/${item.path}` }} style={styles.image} />
       {/* <Text style={styles.title} numberOfLines={2}>
         {item.title}
       </Text> */}

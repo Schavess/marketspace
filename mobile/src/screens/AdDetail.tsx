@@ -74,7 +74,6 @@ export function AdDetail() {
 
     setItemData(response.data);
     setImageData(response.data.product_images);
-    console.log(response.data.user.tel);
   }
 
   const handleNavigateToChat = () => {

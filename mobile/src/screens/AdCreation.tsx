@@ -16,17 +16,17 @@ import { THEME } from '../theme';
 type PaymentMethods = {
   boleto: boolean;
   pix: boolean;
-  dinheiro: boolean;
-  cartaoCredito: boolean;
-  depositoBancario: boolean;
+  cash: boolean;
+  card: boolean;
+  deposit: boolean;
 };
 
 const initialPaymentMethods: PaymentMethods = {
   boleto: true,
   pix: true,
-  dinheiro: true,
-  cartaoCredito: true,
-  depositoBancario: true,
+  cash: true,
+  card: true,
+  deposit: true,
 };
 
 export function AdCreation() {
