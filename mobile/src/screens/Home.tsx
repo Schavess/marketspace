@@ -83,6 +83,11 @@ export function Home() {
     setFilteredAdsData(filtered);
   }, [adsData]);
 
+  const getFirstName = (fullName: string): string => {
+    const names = fullName.split(' ');
+    return names[0];
+  };
+
   useEffect(() => {
     fetchAds();
     fetchUserAds();
@@ -107,7 +112,7 @@ export function Home() {
         />
         <VStack ml={2}>
           <Text fontSize={'md'}>Boas vindas,</Text>
-          <Text fontSize={'lg'} fontFamily={'heading'}>{user.name}!</Text>
+          <Text fontSize={'lg'} fontFamily={'heading'}>{getFirstName(user.name)}!</Text>
         </VStack>
         <VStack flex={1} alignItems={'flex-end'}>
           <Button

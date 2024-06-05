@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
-import { HStack, VStack, View, Text, Image, Badge, Button as NBButton } from 'native-base';
+import { TouchableOpacity, SafeAreaView, ScrollView, Linking } from 'react-native';
+import { HStack, VStack, View, Text, Image, Badge, Button as NBButton, Link } from 'native-base';
 import { ArrowLeft, Money, WhatsappLogo, QrCode, Barcode, CreditCard, Bank } from 'phosphor-react-native';
 
 import { MyCarousel } from '@components/MyCarousel'
@@ -51,15 +51,10 @@ const paymentIcons: { [key: string]: JSX.Element } = {
 };
 
 const CARROUSEL_DATA = [
-  { thumbnail: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', title: 'Photo 1' },
-  { thumbnail: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-03-768x768.jpg', title: 'Photo 2' },
-  { thumbnail: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-07-768x768.jpg', title: 'Photo 3' },
-  // Adicione mais itens conforme necessário
-  { thumbnail: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', title: 'Photo 4' },
-  { thumbnail: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-03-768x768.jpg', title: 'Photo 5' },
-  { thumbnail: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-07-768x768.jpg', title: 'Photo 6' },
-  // Adicione mais itens conforme necessário
+  { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', id: 'Photo 1' },
 ];
+
+
 
 export function AdDetail() {
 
@@ -72,15 +67,22 @@ export function AdDetail() {
   } = route.params;
 
   const [itemData, setItemData] = useState<ItemData | null>(null);
+  const [imageData, setImageData] = useState<ImageData | any>(null);
 
   const fetchItemData = async () => {
     const response = await api.get(`/products/${item_id}`);
 
     setItemData(response.data);
-    console.log(response.data);
+    setImageData(response.data.product_images);
+    console.log(response.data.user.tel);
   }
 
-  console.log(itemData?.user.avatar);
+  const handleNavigateToChat = () => {
+    const url = `https://wa.me/${itemData?.user.tel}?text=Oi+${itemData?.user.name}+Gostaria+de+solicitar+um+or%C3%A7amento+do+produto+${itemData?.name}`;
+
+    Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
+  }
+
 
   function HandleGoBack() {
     navigation.goBack();
@@ -99,7 +101,7 @@ export function AdDetail() {
           </TouchableOpacity>
         </View>
         <SafeAreaView style={{ width: '100%', alignItems: 'center' }}>
-          <MyCarousel data={CARROUSEL_DATA} />
+          <MyCarousel data={imageData ? imageData : CARROUSEL_DATA} />
         </SafeAreaView>
         <HStack w={'85%'} alignItems={'center'}>
           <Image
@@ -180,17 +182,18 @@ export function AdDetail() {
           </HStack>
           <HStack flex={1} justifyContent={'flex-end'}>
             <NBButton
-
               bg={'blue_light'}
               _pressed={{
                 bg: 'blue'
               }}
+              onPress={handleNavigateToChat}
             >
               <HStack alignItems={'flex-end'}>
                 <WhatsappLogo color={'white'} size={25} />
                 <Text pl={2} color={'white'} fontSize={'md'} fontFamily={'heading'}>Entrar em contato</Text>
               </HStack>
             </NBButton>
+
           </HStack>
 
         </HStack>

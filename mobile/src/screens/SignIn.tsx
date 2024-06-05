@@ -54,7 +54,7 @@ export function SignIn() {
 
   return (
     <>
-      <VStack bg={"gray.600"} borderRadius={20} pb={20} alignItems="center" >
+      <VStack bg={"gray.600"} borderRadius={20} pb={10} alignItems="center" >
         <Center my={20}>
           <LogoSVG width={100} height={100} />
           <Text fontSize="xxl" fontFamily="heading" >marketspace</Text>
@@ -89,6 +89,7 @@ export function SignIn() {
                 secureTextEntry
                 onChangeText={onChange}
                 errorMessage={errors.password?.message}
+                onSubmitEditing={handleSubmit(handleSignIn)}
               />
             )}
           />

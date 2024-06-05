@@ -187,6 +187,7 @@ export function SignUp() {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
+                onSubmitEditing={handleSubmit(onSubmit)}
               />
             )}
             name="confirmPassword"

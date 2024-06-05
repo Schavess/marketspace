@@ -5,10 +5,11 @@ import Carousel from 'react-native-reanimated-carousel';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 import { THEME } from '../theme';
+import { api } from '@services/api';
 
 interface Item {
-  thumbnail: string;
-  title: string;
+  path: string;
+  id: string;
 }
 
 interface MyCarouselProps {
@@ -22,7 +23,7 @@ export const MyCarousel: React.FC<MyCarouselProps> = ({ data }) => {
 
   const renderItem = ({ item }: { item: Item }) => (
     <View style={styles.item}>
-      <Image source={{ uri: item.thumbnail }} style={styles.image} />
+      <Image source={{ uri: `${api.defaults.baseURL}/images/${item.path}` }} style={styles.image} />
       {/* <Text style={styles.title} numberOfLines={2}>
         {item.title}
       </Text> */}
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
   item: {
     width: screenWidth,
     height: screenHeight / 3,
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
     borderRadius: 10,
     overflow: 'hidden',
     justifyContent: 'center',
