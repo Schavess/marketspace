@@ -2,45 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, SafeAreaView, ScrollView, Linking } from 'react-native';
 import { HStack, VStack, View, Text, Image, Badge, Button as NBButton, Link } from 'native-base';
 import { ArrowLeft, Money, WhatsappLogo, QrCode, Barcode, CreditCard, Bank } from 'phosphor-react-native';
-
 import { MyCarousel } from '@components/MyCarousel'
-
 import { useNavigation, useRoute } from '@react-navigation/native';
-
 import { api } from '@services/api';
+import { Avatar } from '@assets/Avatar.png';
 
-import { Avatar } from '@assets/Avatar.png'
-
-interface PaymentMethod {
-  key: string;
-  name: string;
-}
-
-interface ProductImage {
-  id: string;
-  path: string;
-}
-interface User {
-  avatar: string;
-  name: string;
-  tel: string;
-}
-
-interface ItemData {
-  accept_trade: boolean;
-  created_at: string;
-  description: string;
-  id: string;
-  is_active: boolean;
-  is_new: boolean;
-  name: string;
-  payment_methods: PaymentMethod[];
-  price: number;
-  product_images: ProductImage[];
-  updated_at: string;
-  user: User;
-  user_id: string;
-}
+import { ItemData } from '../@types/interfaces';
 
 const paymentIcons: { [key: string]: JSX.Element } = {
   'Boleto': <Barcode size={16} />,
@@ -53,8 +20,6 @@ const paymentIcons: { [key: string]: JSX.Element } = {
 const CARROUSEL_DATA = [
   { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', id: 'Photo 1' },
 ];
-
-
 
 export function AdDetail() {
 

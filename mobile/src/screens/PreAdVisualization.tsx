@@ -1,28 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import * as FileSystem from 'expo-file-system';
-import { TouchableOpacity, SafeAreaView, ScrollView, Alert } from 'react-native';
-import { HStack, VStack, View, Text, Image, Badge, Button as NBButton, Center } from 'native-base';
-import { ArrowLeft, Money, WhatsappLogo, QrCode, Barcode, CreditCard, Bank } from 'phosphor-react-native';
-
-import { MyCarousel } from '@components/MyCarousel'
-
-import { useNavigation } from '@react-navigation/native';
-
-import avatar from '@assets/Avatar.png';
-
-import { THEME } from '../theme';
-
 import { useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/useAuth';
 import { api } from '@services/api';
 
+import { TouchableOpacity, SafeAreaView, ScrollView, Alert } from 'react-native';
+import { HStack, VStack, View, Text, Image, Badge, Button as NBButton, Center } from 'native-base';
+import { Money, QrCode, Barcode, CreditCard, Bank } from 'phosphor-react-native';
+
+import { MyCarousel } from '@components/MyCarousel';
+import { Loading } from '@components/Loading';
+import { THEME } from '../theme';
+import defaulUserPhotoImg from '../assets/Avatar.png';
 
 const CARROUSEL_DATA = [
   { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', id: 'Photo 1' },
   { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-03-768x768.jpg', id: 'Photo 2' },
 ];
 
-import defaulUserPhotoImg from '../assets/Avatar.png';
 
 export function PreAdVisualization() {
 
@@ -40,11 +36,8 @@ export function PreAdVisualization() {
     selectedImages
   } = route.params;
 
-  console.log(Object.entries(paymentMethods)
-    .filter(([key, value]) => value === true)
-    .map(([key, value]) => key));
-
   const [carouselData, setCarouselData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const createCarouselData = (filePaths: any) => {
@@ -64,6 +57,8 @@ export function PreAdVisualization() {
   }
 
   async function handlePublishAd() {
+
+    setIsLoading(true);
 
     const product = {
       name,
@@ -108,9 +103,7 @@ export function PreAdVisualization() {
         },
       });
 
-      console.log(response.data)
-
-      Alert.alert('Sucesso!');
+      setIsLoading(false);
 
     } catch (error) {
       console.log(error);
@@ -136,7 +129,7 @@ export function PreAdVisualization() {
         <VStack w={'100%'} alignItems={'center'} >
           <HStack w={'85%'} alignItems={'center'}>
             <Image
-              source={user.avatar ? { uri: `${api.defaults.baseURL}/images/${user.avatar}` } : defaulUserPhotoImg}
+              source={user.avatar ? { uri: `${api.defaults.baseURL}/images/${user.avatar}` } : { uri: defaulUserPhotoImg }}
               alt='Avatar image'
               width={'35px'}
               height={'35px'}
@@ -243,7 +236,13 @@ export function PreAdVisualization() {
                   alignItems: 'center',
                 }}
                 onPress={handlePublishAd}>
-                <Text fontFamily={'heading'} color={'white'}>Publicar</Text>
+                {isLoading ?
+                  <>
+                    < Loading />
+                  </> :
+                  <>
+                    <Text fontFamily={'heading'} color={'white'}>Publicar</Text>
+                  </>}
               </TouchableOpacity>
             </View>
 
