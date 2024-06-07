@@ -59,6 +59,10 @@ export function Home() {
     navigation.navigate('adcreation');
   }
 
+  function handleNavigateUserUpdate() {
+    navigation.navigate('userupdate');
+  }
+
   const handleSearchInput = useCallback(() => {
     const filteredData = adsData.filter(data =>
       data.name.toLowerCase().includes(inputSearchData.toLowerCase())
@@ -103,13 +107,15 @@ export function Home() {
   const renderHeader = useMemo(() => (
     <VStack w={'100%'}>
       <HStack pt={'20px'} justifyContent={'space-between'}>
-        <Image
-          source={user.avatar ? { uri: `${api.defaults.baseURL}/images/${user.avatar}` } : defaulUserPhotoImg}
-          alt='Avatar image'
-          width={50}
-          height={50}
-          borderRadius={50}
-        />
+        <TouchableOpacity onPress={handleNavigateUserUpdate}>
+          <Image
+            source={user.avatar ? { uri: `${api.defaults.baseURL}/images/${user.avatar}` } : defaulUserPhotoImg}
+            alt='Avatar image'
+            width={50}
+            height={50}
+            borderRadius={50}
+          />
+        </TouchableOpacity>
         <VStack ml={2}>
           <Text fontSize={'md'}>Boas vindas,</Text>
           <Text fontSize={'lg'} fontFamily={'heading'}>{getFirstName(user.name)}!</Text>

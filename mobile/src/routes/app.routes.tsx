@@ -6,6 +6,7 @@ import { MyAdDetail } from '@screens/MyAdDetail';
 import { AdEdition } from '@screens/AdEdition';
 import { AdCreation } from '@screens/AdCreation';
 import { PreAdVisualization } from '@screens/PreAdVisualization';
+import { UserUpdate } from '@screens/UserUpdate';
 
 
 type AppRoutes = {
@@ -14,6 +15,7 @@ type AppRoutes = {
   myaddetail: undefined;
   adedition: undefined;
   adcreation: undefined;
+  userupdate: undefined;
   preadvisualization: {
     name: string;
     description: string;
@@ -35,6 +37,7 @@ export function AppRoutes() {
       <Screen name="adedition" component={AdEdition} />
       <Screen name="adcreation" component={AdCreation} />
       <Screen name="preadvisualization" component={PreAdVisualization} />
+      <Screen name="userupdate" component={UserUpdate} />
     </Navigator>
 
   );

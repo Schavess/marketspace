@@ -87,7 +87,7 @@ export function AdDetail() {
           </Badge>
         </HStack>
         <HStack w={'85%'} pt={2} alignItems={'flex-end'}>
-          <Text flex={1} fontSize={'xl'} fontFamily={'heading'}>Tênis</Text>
+          <Text flex={1} fontSize={'xl'} fontFamily={'heading'}>{itemData?.name}</Text>
           <Text color={'blue_light'} fontSize={'md'} fontFamily={'heading'}>R$</Text>
           <Text pl={2} color={'blue_light'} fontSize={'lg'} fontFamily={'heading'}>{itemData?.price}</Text>
         </HStack>

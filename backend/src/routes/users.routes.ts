@@ -18,4 +18,5 @@ const upload = multer(MULTER);
 
 usersRoutes.post("/", upload.single("avatar"), usersController.create, userAvatarController.create);
 usersRoutes.get("/me", ensureAuthenticated, usersController.show);
+usersRoutes.put("/me", ensureAuthenticated, upload.single("avatar"), usersController.update);
 usersRoutes.get("/products", ensureAuthenticated, userProductsController.index);
