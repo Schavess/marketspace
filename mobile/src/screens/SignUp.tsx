@@ -13,11 +13,14 @@ import { Button } from "@components/Button";
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
 
 import { api } from '@services/api';
+import { useAuth } from '@hooks/useAuth';
 
 export function SignUp() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [image, setImage] = useState<string | null>(null);
+
+  const { singIn } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -76,9 +79,11 @@ export function SignUp() {
         },
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         Alert.alert('Sucesso', 'Conta criada com sucesso!');
-        navigation.goBack();
+
+        await singIn(data.email, data.password);
+
       } else {
         Alert.alert('Erro', 'Ocorreu um erro ao criar a conta. Tente novamente.');
       }
@@ -102,8 +107,9 @@ export function SignUp() {
               source={image ? { uri: image } : ImageUserPhotoDefault}
               alt="User Photo"
               mb={5}
-              size="150px"
-              borderRadius={'150px'}
+              width={'130px'}
+              height={'130px'}
+              borderRadius={'130px'}
             />
           </TouchableOpacity>
           <Controller

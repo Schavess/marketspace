@@ -114,7 +114,7 @@ export function PreAdVisualization() {
       );
 
       images.forEach((image) => {
-        formData.append('images', image); // Ajuste aqui para 'images'
+        formData.append('images', image);
       });
 
       let response = await api.post('/products/images', formData, {

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import * as FileSystem from 'expo-file-system';
 import { Center, Text, VStack, HStack, Switch, Badge, Box } from 'native-base';
 import { ScrollView, TouchableOpacity, View, Image, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -85,23 +86,79 @@ export function AdEdition() {
   }
 
   const handleUpdateItem = async (data: any) => {
+    const uploadImages = async () => {
+      if (selectedImages.length > 0) {
+        try {
+          const formData = new FormData();
+          formData.append('product_id', item_id);
 
-    const formattedData = {
-      name: data.name,
-      description: data.description,
-      is_new: data.productCondition,
-      price: parseFloat(data.price),
-      accept_trade: data.accept_trade,
-      payment_methods: Object.keys(data.paymentMethods).filter(method => data.paymentMethods[method as keyof PaymentMethods]),
+          const images = await Promise.all(
+            selectedImages.map(async (image: string) => {
+              const fileInfo = await FileSystem.getInfoAsync(image);
+              const fileName = fileInfo.uri.split('/').pop();
+              const fileType = fileInfo.uri.split('.').pop();
+
+              return {
+                uri: fileInfo.uri,
+                name: fileName,
+                type: `image/${fileType}`,
+              };
+            })
+          );
+
+          images.forEach((image: any) => {
+            formData.append('images', image);
+          });
+
+          const response = await api.post('/products/images', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+
+          if (response.status === 201) {
+            return
+          } else {
+            Alert.alert('Erro', 'Ocorreu um erro ao adicionar as imagens. Tente novamente.');
+          }
+        } catch (error) {
+          console.log('Erro ao enviar imagens:', error);
+          Alert.alert('Erro', 'Ocorreu um erro ao adicionar as imagens.');
+        }
+      }
     };
 
-    const response = await api.put(`/products/${item_id}`, formattedData);
+    const updateProductData = async () => {
+      try {
+        const formattedData = {
+          name: data.name,
+          description: data.description,
+          is_new: data.productCondition,
+          price: parseFloat(data.price),
+          accept_trade: data.accept_trade,
+          payment_methods: Object.keys(data.paymentMethods).filter(
+            (method) => data.paymentMethods[method as keyof PaymentMethods]
+          ),
+        };
 
-    if (response.status === 204) {
-      navigation.navigate('home');
-      Alert.alert('Produto alterado com sucesso!');
-    }
+        const response = await api.put(`/products/${item_id}`, formattedData);
+
+        if (response.status === 204) {
+          navigation.navigate('home');
+          Alert.alert('Produto alterado com sucesso!');
+        } else {
+          Alert.alert('Erro', 'Ocorreu um erro ao atualizar o produto. Tente novamente.');
+        }
+      } catch (error) {
+        console.log('Erro ao atualizar produto:', error);
+        Alert.alert('Erro', 'Ocorreu um erro ao atualizar o produto.');
+      }
+    };
+
+    await uploadImages();
+    await updateProductData();
   };
+
 
   const handleDeleteImage = (imageId: string) => {
     setImageIdToDelete(imageId);
