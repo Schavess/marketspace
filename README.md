@@ -8,24 +8,24 @@
 Marketspace é uma aplicação de compra e venda de produtos online, similar a OLX. 
 </p>
 <div align="center" style="display: flex; flex-direction: row;" >
-    <img src="./mobile/src/assets/signin.jpeg" width="300" />
-    <img src="./mobile/src/assets/signup.jpeg" width="300" />
-    <img src="./mobile/src/assets/useredit.jpeg" width="300" />
+    <img src="./mobile/src/assets/signin.jpeg" width="200" />
+    <img src="./mobile/src/assets/signup.jpeg" width="200" />
+    <img src="./mobile/src/assets/useredit.jpeg" width="200" />
+</div2
+<div align="center" style="display: flex; flex-direction: row;" >
+    <img src="./mobile/src/assets/home.jpeg" width="200" />
+    <img src="./mobile/src/assets/adsdetail.jpeg" width="200" />
+    <img src="./mobile/src/assets/myads.jpeg" width="200" />
 </div>
 <div align="center" style="display: flex; flex-direction: row;" >
-    <img src="./mobile/src/assets/home.jpeg" width="300" />
-    <img src="./mobile/src/assets/adsdetail.jpeg" width="300" />
-    <img src="./mobile/src/assets/myads.jpeg" width="300" />
+    <img src="./mobile/src/assets/myaddetail.jpeg" width="200" />
+    <img src="./mobile/src/assets/myaddetail2.jpeg" width="200" />
+    <img src="./mobile/src/assets/myaddetail3.jpeg" width="200" />
 </div>
 <div align="center" style="display: flex; flex-direction: row;" >
-    <img src="./mobile/src/assets/myaddetail.jpeg" width="300" />
-    <img src="./mobile/src/assets/myaddetail2.jpeg" width="300" />
-    <img src="./mobile/src/assets/myaddetail3.jpeg" width="300" />
-</div>
-<div align="center" style="display: flex; flex-direction: row;" >
-    <img src="./mobile/src/assets/adedit.jpeg" width="300" />
-    <img src="./mobile/src/assets/adedit2.jpeg" width="300" />
-    <img src="./mobile/src/assets/logout.jpeg" width="300" />
+    <img src="./mobile/src/assets/adedit.jpeg" width="200" />
+    <img src="./mobile/src/assets/adedit2.jpeg" width="200" />
+    <img src="./mobile/src/assets/logout.jpeg" width="200" />
 </div>
 
 <h3>Origem</h3>
