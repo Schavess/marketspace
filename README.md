@@ -11,7 +11,7 @@ Marketspace é uma aplicação de compra e venda de produtos online, similar a O
     <img src="./mobile/src/assets/signin.jpeg" width="200" />
     <img src="./mobile/src/assets/signup.jpeg" width="200" />
     <img src="./mobile/src/assets/useredit.jpeg" width="200" />
-</div2
+</div>
 <div align="center" style="display: flex; flex-direction: row;" >
     <img src="./mobile/src/assets/home.jpeg" width="200" />
     <img src="./mobile/src/assets/adsdetail.jpeg" width="200" />
