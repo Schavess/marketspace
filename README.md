@@ -8,48 +8,24 @@
 Marketspace é uma aplicação de compra e venda de produtos online, similar a OLX. 
 </p>
 <div align="center" style="display: flex; flex-direction: row;" >
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/signin.jpeg" width="300" />
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/signup.jpeg" width="300" />
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/useredit.jpeg" width="300" />
-  </div>
 </div>
 <div align="center" style="display: flex; flex-direction: row;" >
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/home.jpeg" width="300" />
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/adsdetail.jpeg" width="300" />
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/myads.jpeg" width="300" />
-  </div>
 </div>
 <div align="center" style="display: flex; flex-direction: row;" >
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/myaddetail.jpeg" width="300" />
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/myaddetail2.jpeg" width="300" />
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/myaddetail3.jpeg" width="300" />
-  </div>
 </div>
 <div align="center" style="display: flex; flex-direction: row;" >
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/adedit.jpeg" width="300" />
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/adedit2.jpeg" width="300" />
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center;margin: 5px">
     <img src="./mobile/src/assets/logout.jpeg" width="300" />
-  </div>
 </div>
 
 <h3>Origem</h3>
