@@ -9,7 +9,7 @@ interface CustomAlertProps {
   message: string;
   textConfirm?: string;
   onCancel: () => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
 }
 
 export function CustomAlert({ visible, title, message, onCancel, onConfirm, textConfirm = 'Sim, excluir' }: CustomAlertProps) {
@@ -25,14 +25,27 @@ export function CustomAlert({ visible, title, message, onCancel, onConfirm, text
           <Text style={styles.modalTitle}>{title}</Text>
           <Text style={styles.modalText}>{message}</Text>
           <View style={styles.buttonContainer}>
-            <Button color={'gray.400'} textColor={'white'} style={{
-              flex: 1,
-              margin: 5,
-            }} title='Cancelar' onPress={onCancel} />
-            <Button color={'gray.100'} textColor={'white'} style={{
-              flex: 1,
-              margin: 5,
-            }} title={textConfirm} onPress={onConfirm} />
+            <Button
+              color={'gray.400'}
+              textColor={'white'}
+              style={{
+                flex: 1,
+                margin: 5,
+              }}
+              title='Cancelar'
+              onPress={onCancel} />
+            <Button
+              color={'gray.100'}
+              textColor={'white'}
+              style={{
+                flex: 1,
+                margin: 5,
+              }}
+              title={textConfirm}
+              onPress={async () => {
+                await onConfirm();
+                onCancel();
+              }} />
           </View>
         </View>
       </View>

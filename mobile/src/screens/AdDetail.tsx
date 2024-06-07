@@ -73,6 +73,7 @@ export function AdDetail() {
             alt='Avatar image'
             width={'35px'}
             height={'35px'}
+            borderRadius={'35px'}
           />
           <Text pl={3} fontSize={'md'} fontFamily={'body'}>{itemData?.user.name}</Text>
         </HStack>

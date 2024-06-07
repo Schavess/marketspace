@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/useAuth';
 import { api } from '@services/api';
 
-import { TouchableOpacity, SafeAreaView, ScrollView, Alert } from 'react-native';
+import { TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { HStack, VStack, View, Text, Image, Badge, Button as NBButton, Center } from 'native-base';
 import { Money, QrCode, Barcode, CreditCard, Bank } from 'phosphor-react-native';
 
@@ -13,6 +13,22 @@ import { MyCarousel } from '@components/MyCarousel';
 import { Loading } from '@components/Loading';
 import { THEME } from '../theme';
 import defaulUserPhotoImg from '../assets/Avatar.png';
+
+const paymentIcons: { [key: string]: JSX.Element } = {
+  'boleto': <Barcode size={16} />,
+  'pix': <QrCode size={16} />,
+  'cash': <Money size={16} />,
+  'card': <CreditCard size={16} />,
+  'deposit': <Bank size={16} />,
+};
+
+const paymentMethodsNames: { [key: string]: string } = {
+  'boleto': 'Boleto',
+  'pix': 'Pix',
+  'cash': 'Dinheiro',
+  'card': 'Cartão de  Crédtio',
+  'deposit': 'Depósito Bancário',
+};
 
 const CARROUSEL_DATA = [
   { path: 'https://scalcados.com.br/wp-content/uploads/2022/02/tenis-capricho-cano-alto-vermelho-01-768x768.jpg', id: 'Photo 1' },
@@ -35,6 +51,10 @@ export function PreAdVisualization() {
     paymentMethods,
     selectedImages
   } = route.params;
+
+  const paymentMethodsSelected = Object.entries(paymentMethods)
+    .filter(([key, value]) => value === true)
+    .map(([key, value]) => key);
 
   const [carouselData, setCarouselData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -105,6 +125,8 @@ export function PreAdVisualization() {
 
       setIsLoading(false);
 
+      navigation.navigate('home');
+
     } catch (error) {
       console.log(error);
 
@@ -170,36 +192,28 @@ export function PreAdVisualization() {
             </Text>
           </HStack>
           <VStack w={'85%'}>
-            <HStack alignItems={'center'}>
-              <Barcode size={16} />
-              <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-                Boleto
-              </Text>
-            </HStack>
-            <HStack alignItems={'center'}>
-              <QrCode size={16} />
-              <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-                PIX
-              </Text>
-            </HStack>
-            <HStack alignItems={'center'}>
-              <Money size={16} />
-              <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-                Dinheiro
-              </Text>
-            </HStack>
-            <HStack alignItems={'center'}>
-              <CreditCard size={16} />
-              <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-                Cartão de Crédito
-              </Text>
-            </HStack>
-            <HStack alignItems={'center'}>
-              <Bank size={16} />
-              <Text fontSize={'md'} fontFamily={'body'} pl={2}>
-                Depósito Bancário
-              </Text>
-            </HStack>
+            {paymentMethodsSelected && paymentMethodsSelected.map(method => {
+              const icon = paymentIcons[method];
+              const names = paymentMethodsNames[method];
+              return (
+                <React.Fragment key={method}>
+                  {icon ? (
+                    <HStack alignItems={'center'}>
+                      {icon}
+                      <Text fontSize={'md'} fontFamily={'body'} pl={2}>
+                        {names}
+                      </Text>
+                    </HStack>
+                  ) : (
+                    <HStack alignItems={'center'}>
+                      <Text fontSize={'md'} fontFamily={'body'} pl={2}>
+                        {method} - Icone não encontrado
+                      </Text>
+                    </HStack>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </VStack>
           <HStack py={7} px={5} flex={1} w={'100%'} bg={'white'} alignItems={'center'}>
             <View style={{

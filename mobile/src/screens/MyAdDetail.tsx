@@ -7,7 +7,6 @@ import { MyCarousel } from '@components/MyCarousel'
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import avatar from '@assets/Avatar.png';
 import { CustomAlert } from '@components/CustomAlert';
 
 import { ItemData } from '../@types/interfaces';
@@ -81,7 +80,7 @@ export function MyAdDetail() {
     navigation.goBack();
   }
   function HandleGoEdit() {
-    navigation.navigate('adedition');
+    navigation.navigate('adedition', { item_id, itemData });
   }
 
   useEffect(() => {

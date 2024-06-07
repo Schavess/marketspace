@@ -61,13 +61,14 @@ export class ProductImagesController {
 
   async delete(request: Request, response: Response) {
     const userId = request.user.id;
-    const productImagesIds = request.body.productImagesIds;
+    const productImagesIds = request.body.images;
 
     const diskStorage = new DiskStorage();
 
-    if (productImagesIds.length === 0) {
-      throw new AppError("É obrigatório o envio dos ids das imagens a serem deletadas.")
+    if (!productImagesIds || !Array.isArray(productImagesIds) || productImagesIds.length === 0) {
+      throw new AppError("É obrigatório o envio dos ids das imagens a serem deletadas.");
     }
+
 
     const productImages = await prisma.productImages.findMany({
       where: {
